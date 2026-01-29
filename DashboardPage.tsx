@@ -80,6 +80,7 @@ export function DashboardPage() {
   const [level, setLevel] = useState<Level>("ctprvn");
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
   const [indicatorKey, setIndicatorKey] = useState<string>(indicatorOptions[0].key);
+  const [year, setYear] = useState<number>(2024);
   const [ctprvnGeo, setCtprvnGeo] = useState<GeoState>(null);
   const [sigGeo, setSigGeo] = useState<GeoState>(null);
   const [emdGeo, setEmdGeo] = useState<GeoState>(null);
@@ -106,7 +107,6 @@ export function DashboardPage() {
   }, []);
 
   const currentFeatures = useMemo(() => {
-    // geo filtering: selectedCode prefix determines which level to show
     if (level === "ctprvn") return (ctprvnGeo?.features ?? []) as Feature<Geometry, any>[];
     if (level === "sig") {
       if (!selectedCode) return [];
@@ -132,8 +132,8 @@ export function DashboardPage() {
 
   useEffect(() => {
     const codes = currentFeatures.map((f) => getFeatureCode(level, f)).filter(Boolean);
-    setStats(generateDummyStats(codes, indicatorKey));
-  }, [level, selectedCode, currentFeatures, indicatorKey]);
+    setStats(generateDummyStats(codes, `${indicatorKey}-${year}`));
+  }, [level, selectedCode, currentFeatures, indicatorKey, year]);
 
   const handleSelect = (nextLevel: Level, code: string) => {
     setLevel(nextLevel);
@@ -147,6 +147,20 @@ export function DashboardPage() {
     }
     if (nextLevel === "sig" && selectedCode) {
       setLevel("sig");
+    }
+  };
+
+  const handleGoRoot = () => {
+    setLevel("ctprvn");
+    setSelectedCode(null);
+  };
+
+  const handleGoUp = () => {
+    if (level === "emd") {
+      setLevel("sig");
+    } else if (level === "sig") {
+      setLevel("ctprvn");
+      setSelectedCode(null);
     }
   };
 
@@ -206,6 +220,43 @@ export function DashboardPage() {
     return buckets.map((b) => b / maxBucket);
   }, [stats]);
 
+  const legendColors = ["#eff6ff", "#bfdbfe", "#93c5fd", "#60a5fa", "#3b82f6", "#1e3a8a"];
+  const legendStops = useMemo(() => {
+    if (!values.length) return [] as { value: number; color: string }[];
+    const sorted = [...values].sort((a, b) => a - b);
+    return legendColors.map((color, idx) => {
+      const q = idx / (legendColors.length - 1);
+      const position = Math.min(sorted.length - 1, Math.floor(q * (sorted.length - 1)));
+      return { value: sorted[position], color };
+    });
+  }, [values, legendColors]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set("level", level);
+    if (selectedCode) params.set("code", selectedCode);
+    params.set("indicator", indicatorKey);
+    params.set("year", String(year));
+    const url = `${window.location.pathname}?${params.toString()}`;
+    window.history.pushState(null, "", url);
+  }, [level, selectedCode, indicatorKey, year]);
+
+  useEffect(() => {
+    const handler = () => {
+      const params = new URLSearchParams(window.location.search);
+      const nextLevel = (params.get("level") as Level) || "ctprvn";
+      const nextCode = params.get("code");
+      const nextIndicator = params.get("indicator") || indicatorOptions[0].key;
+      const nextYear = Number(params.get("year") || 2024);
+      setLevel(nextLevel);
+      setSelectedCode(nextLevel === "ctprvn" ? null : nextCode);
+      setIndicatorKey(nextIndicator);
+      setYear(Number.isNaN(nextYear) ? 2024 : nextYear);
+    };
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, []);
+
   const ageDistribution = [
     { label: "0-4", value: 1293 },
     { label: "5-9", value: 1857 },
@@ -253,7 +304,7 @@ export function DashboardPage() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "280px minmax(520px, 1fr) 320px",
+        gridTemplateColumns: "280px minmax(420px, 0.9fr) 340px",
         gap: 16,
         minHeight: "100vh",
         padding: 16,
@@ -293,8 +344,52 @@ export function DashboardPage() {
           <div style={{ fontSize: 12, color: "#64748b" }}>정책형 드릴다운 대시보드</div>
         </div>
 
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", fontSize: 12 }}>
+          <button
+            onClick={() => handleBreadcrumb("ctprvn")}
+            style={{
+              padding: "4px 8px",
+              borderRadius: 999,
+              border: "1px solid #e2e8f0",
+              background: level === "ctprvn" ? "#eff6ff" : "#fff",
+              color: "#1d4ed8",
+              cursor: "pointer",
+            }}
+          >
+            대한민국
+          </button>
+          {level !== "ctprvn" && (
+            <button
+              onClick={() => handleBreadcrumb("sig")}
+              style={{
+                padding: "4px 8px",
+                borderRadius: 999,
+                border: "1px solid #e2e8f0",
+                background: level === "sig" ? "#eff6ff" : "#fff",
+                color: "#1d4ed8",
+                cursor: "pointer",
+              }}
+            >
+              {selectedParentName}
+            </button>
+          )}
+          {level === "emd" && selectedCode && (
+            <span
+              style={{
+                padding: "4px 8px",
+                borderRadius: 999,
+                border: "1px solid #e2e8f0",
+                background: "#f8fafc",
+                color: "#475569",
+              }}
+            >
+              {selectedCode}
+            </span>
+          )}
+        </div>
+
         <div style={{ display: "grid", gap: 12 }}>
-          {[
+            {[
             { label: "최대값", value: maxValue, color: "#1d4ed8" },
             { label: "평균값", value: avgValue, color: "#0ea5e9" },
             { label: "최소값", value: minValue, color: "#2563eb" },
@@ -340,6 +435,59 @@ export function DashboardPage() {
           </div>
         </div>
 
+        <div>
+          <div style={{ fontWeight: 700, marginBottom: 8 }}>연도 선택</div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {[2020, 2021, 2022, 2023, 2024].map((y) => (
+              <button
+                key={y}
+                onClick={() => setYear(y)}
+                style={{
+                  padding: "6px 10px",
+                  borderRadius: 8,
+                  border: y === year ? "1px solid #2563eb" : "1px solid #e2e8f0",
+                  background: y === year ? "#eff6ff" : "#fff",
+                  cursor: "pointer",
+                  fontSize: 12,
+                }}
+              >
+                {y}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ display: "flex", gap: 8 }}>
+          <button
+            onClick={handleGoUp}
+            disabled={level === "ctprvn"}
+            style={{
+              padding: "6px 10px",
+              borderRadius: 8,
+              border: "1px solid #e2e8f0",
+              background: "#fff",
+              cursor: level === "ctprvn" ? "default" : "pointer",
+              fontSize: 12,
+            }}
+          >
+            이전 단계로
+          </button>
+          <button
+            onClick={handleGoRoot}
+            style={{
+              padding: "6px 10px",
+              borderRadius: 8,
+              border: "1px solid #e2e8f0",
+              background: "#eff6ff",
+              cursor: "pointer",
+              fontSize: 12,
+              color: "#1d4ed8",
+            }}
+          >
+            전국으로
+          </button>
+        </div>
+
         <div style={{ background: "#eff6ff", borderRadius: 12, padding: 12, border: "1px solid #bfdbfe" }}>
           <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 6, color: "#1d4ed8" }}>드릴다운 의미</div>
           <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "#1e40af", lineHeight: 1.5 }}>
@@ -360,6 +508,7 @@ export function DashboardPage() {
           display: "flex",
           flexDirection: "column",
           gap: 10,
+          height: "62vh",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -379,8 +528,34 @@ export function DashboardPage() {
           </div>
         </div>
 
-        <div style={{ flex: 1, minHeight: 420, borderRadius: 12, overflow: "hidden", border: "1px solid #eef2f7" }}>
-          <KoreaDrilldownMap level={level} features={currentFeatures} stats={stats} onSelect={handleSelect} />
+        <div style={{ flex: 1, minHeight: 360, borderRadius: 12, overflow: "hidden", border: "1px solid #eef2f7" }}>
+          <KoreaDrilldownMap
+            level={level}
+            features={currentFeatures}
+            stats={stats}
+            onSelect={handleSelect}
+            indicatorLabel={selectedIndicator.label}
+            unit={selectedIndicator.unit}
+            year={year}
+          />
+        </div>
+
+        <div style={{ marginTop: 8 }}>
+          <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6 }}>
+            범례 · {selectedIndicator.label} ({selectedIndicator.unit}) · {year}년 · 분위수 6구간
+          </div>
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            {legendStops.map((stop, idx) => (
+              <div key={`legend-${idx}`} style={{ textAlign: "center" }}>
+                <div style={{ width: 36, height: 8, borderRadius: 999, background: stop.color }} />
+                <div style={{ fontSize: 10, color: "#94a3b8" }}>{formatIndicatorValue(stop.value)}</div>
+              </div>
+            ))}
+            <div style={{ textAlign: "center" }}>
+              <div style={{ width: 36, height: 8, borderRadius: 999, background: "#e2e8f0" }} />
+              <div style={{ fontSize: 10, color: "#94a3b8" }}>결측</div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -410,7 +585,7 @@ export function DashboardPage() {
                   width: 8,
                   height: `${Math.max(6, ratio * 44)}px`,
                   borderRadius: 4,
-                  background: "#60a5fa",
+                  background: "#3b82f6",
                   opacity: 0.4 + ratio * 0.6,
                 }}
               />
@@ -449,7 +624,7 @@ export function DashboardPage() {
                     width: 20,
                     height: 20,
                     borderRadius: 6,
-                    background: "#dbeafe",
+                  background: "#dbeafe",
                     color: "#1d4ed8",
                     fontSize: 11,
                     fontWeight: 700,
