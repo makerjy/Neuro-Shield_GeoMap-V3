@@ -57,6 +57,7 @@ export function KoreaDrilldownMap({
   const [tooltip, setTooltip] = useState<{ x: number; y: number; name: string; value: number; code: string } | null>(null);
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const gRef = useRef<SVGGElement | null>(null);
   const zoomRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   const [zoomState, setZoomState] = useState(d3.zoomIdentity);
 
@@ -73,7 +74,9 @@ export function KoreaDrilldownMap({
     const min = values.length ? Math.min(...values) : 0;
     const max = values.length ? Math.max(...values) : 100;
     const domain = min === max ? [min - 1, max + 1] : [min, max];
-    return d3.scaleSequential(d3.interpolateBlues).domain(domain as [number, number]);
+    return d3
+      .scaleSequential((t) => d3.interpolateBlues(0.25 + 0.75 * t))
+      .domain(domain as [number, number]);
   }, [stats]);
 
   const projection = useMemo(() => {
@@ -114,10 +117,14 @@ export function KoreaDrilldownMap({
     });
   }, [features, level, path]);
 
-  const showLabels =
-    level === "ctprvn" ||
-    (level === "sig" && zoomState.k >= 1.2) ||
-    (level === "emd" && zoomState.k >= 1.8);
+  const showLabels = level === "ctprvn" || level === "sig" || level === "emd";
+
+  const applyTransform = (next: d3.ZoomTransform) => {
+    if (gRef.current) {
+      d3.select(gRef.current).attr("transform", next.toString());
+    }
+    setZoomState(next);
+  };
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -125,16 +132,19 @@ export function KoreaDrilldownMap({
       .zoom<SVGSVGElement, unknown>()
       .scaleExtent([1, 5])
       .on("zoom", (event) => {
-        setZoomState(event.transform);
+        applyTransform(event.transform);
       });
-    d3.select(svgRef.current).call(zoomBehavior as any);
+    const selection = d3.select(svgRef.current);
+    selection.call(zoomBehavior as any);
     zoomRef.current = zoomBehavior;
   }, [width, height]);
 
   const handleZoom = (direction: "in" | "out") => {
     if (!svgRef.current || !zoomRef.current) return;
     const scale = direction === "in" ? 1.2 : 0.8;
-    d3.select(svgRef.current).transition().call(zoomRef.current.scaleBy as any, scale);
+    const nextK = Math.max(1, Math.min(5, zoomState.k * scale));
+    const next = d3.zoomIdentity.translate(zoomState.x, zoomState.y).scale(nextK);
+    applyTransform(next);
   };
 
   const handleClick = (feature: Feature<Geometry, Record<string, any>>) => {
@@ -149,8 +159,23 @@ export function KoreaDrilldownMap({
       {width < MIN_SIZE || height < MIN_SIZE || !path ? (
         <div style={{ padding: 12, color: "#666" }}>지도 영역이 작아 렌더링을 생략합니다.</div>
       ) : (
-        <svg ref={svgRef} width={width} height={height} style={{ display: "block" }}>
-          <g transform={`translate(${zoomState.x}, ${zoomState.y}) scale(${zoomState.k})`}>
+        <svg
+          ref={svgRef}
+          width={width}
+          height={height}
+          style={{ display: "block", touchAction: "none", cursor: "grab" }}
+          onWheel={(e) => {
+            e.preventDefault();
+            const direction = e.deltaY > 0 ? 0.9 : 1.1;
+            const nextK = Math.max(1, Math.min(5, zoomState.k * direction));
+            const point = d3.pointer(e, svgRef.current);
+            const newX = point[0] - ((point[0] - zoomState.x) / zoomState.k) * nextK;
+            const newY = point[1] - ((point[1] - zoomState.y) / zoomState.k) * nextK;
+            applyTransform(d3.zoomIdentity.translate(newX, newY).scale(nextK));
+          }}
+        >
+          <rect width={width} height={height} fill="transparent" style={{ pointerEvents: "all" }} />
+          <g ref={gRef} transform={`translate(${zoomState.x}, ${zoomState.y}) scale(${zoomState.k})`}>
             {features.map((feature) => {
               const code = getFeatureCode(level, feature);
               const value = statsMap.get(code) ?? 0;
@@ -162,8 +187,8 @@ export function KoreaDrilldownMap({
                   key={code}
                   d={d}
                   fill={fill}
-                  stroke={isHovered ? "#2563eb" : "#ffffff"}
-                  strokeWidth={isHovered ? 2 : 0.7}
+                  stroke={isHovered ? "#0f172a" : "#111827"}
+                  strokeWidth={isHovered ? 1.6 : 0.8}
                   fillOpacity={hoveredCode && !isHovered ? 0.75 : 0.95}
                   onMouseMove={(e) => {
                     setTooltip({
@@ -202,56 +227,6 @@ export function KoreaDrilldownMap({
           </g>
         </svg>
       )}
-
-      <div
-        style={{
-          position: "absolute",
-          right: 10,
-          top: 10,
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => handleZoom("in")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") handleZoom("in");
-          }}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            background: "#ffffff",
-            cursor: "pointer",
-            fontWeight: 700,
-          }}
-          aria-label="줌인"
-        >
-          +
-        </button>
-        <button
-          type="button"
-          onClick={() => handleZoom("out")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") handleZoom("out");
-          }}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            background: "#ffffff",
-            cursor: "pointer",
-            fontWeight: 700,
-          }}
-          aria-label="줌아웃"
-        >
-          -
-        </button>
-      </div>
 
       {tooltip && (
         <div

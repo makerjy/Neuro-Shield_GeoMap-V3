@@ -78,7 +78,8 @@ function getFeatureCode(level: Level, feature: Feature<Geometry, Record<string, 
 
 export function DashboardPage() {
   const [level, setLevel] = useState<Level>("ctprvn");
-  const [selectedCode, setSelectedCode] = useState<string | null>(null);
+  const [selectedCodes, setSelectedCodes] = useState<{ ctprvn?: string; sig?: string }>({});
+  const [selectedNames, setSelectedNames] = useState<{ ctprvn?: string; sig?: string; emd?: string }>({});
   const [indicatorKey, setIndicatorKey] = useState<string>(indicatorOptions[0].key);
   const [year, setYear] = useState<number>(2024);
   const [ctprvnGeo, setCtprvnGeo] = useState<GeoState>(null);
@@ -109,16 +110,18 @@ export function DashboardPage() {
   const currentFeatures = useMemo(() => {
     if (level === "ctprvn") return (ctprvnGeo?.features ?? []) as Feature<Geometry, any>[];
     if (level === "sig") {
-      if (!selectedCode) return [];
+      if (!selectedCodes.ctprvn) return [];
       return (sigGeo?.features ?? []).filter(
-        (f: Feature<Geometry, any>) => String(f.properties?.code ?? "").startsWith(selectedCode)
+        (f: Feature<Geometry, any>) =>
+          String(f.properties?.code ?? "").startsWith(selectedCodes.ctprvn ?? "")
       ) as Feature<Geometry, any>[];
     }
-    if (!selectedCode) return [];
+    if (!selectedCodes.sig) return [];
     return (emdGeo?.features ?? []).filter(
-      (f: Feature<Geometry, any>) => String(f.properties?.code ?? "").startsWith(selectedCode)
+      (f: Feature<Geometry, any>) =>
+        String(f.properties?.code ?? "").startsWith(selectedCodes.sig ?? "")
     ) as Feature<Geometry, any>[];
-  }, [level, ctprvnGeo, sigGeo, emdGeo, selectedCode]);
+  }, [level, ctprvnGeo, sigGeo, emdGeo, selectedCodes]);
 
   const codeNameMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -133,34 +136,55 @@ export function DashboardPage() {
   useEffect(() => {
     const codes = currentFeatures.map((f) => getFeatureCode(level, f)).filter(Boolean);
     setStats(generateDummyStats(codes, `${indicatorKey}-${year}`));
-  }, [level, selectedCode, currentFeatures, indicatorKey, year]);
+  }, [level, selectedCodes, currentFeatures, indicatorKey, year]);
 
   const handleSelect = (nextLevel: Level, code: string) => {
+    const selectedFeature = currentFeatures.find(
+      (feature) => String(feature.properties?.code ?? "") === code
+    ) as Feature<Geometry, Record<string, any>> | undefined;
+    const name = selectedFeature ? getFeatureName(level, selectedFeature) : code;
+
+    if (level === "ctprvn") {
+      setSelectedNames({ ctprvn: name });
+      setSelectedCodes({ ctprvn: code });
+    }
+    if (level === "sig") {
+      setSelectedNames((prev) => ({ ...prev, sig: name }));
+      setSelectedCodes((prev) => ({ ...prev, sig: code }));
+    }
+    if (level === "emd") {
+      setSelectedNames((prev) => ({ ...prev, emd: name }));
+    }
+
     setLevel(nextLevel);
-    setSelectedCode(code);
   };
 
   const handleBreadcrumb = (nextLevel: Level) => {
     if (nextLevel === "ctprvn") {
       setLevel("ctprvn");
-      setSelectedCode(null);
+      setSelectedCodes({});
+      setSelectedNames({});
     }
-    if (nextLevel === "sig" && selectedCode) {
+    if (nextLevel === "sig" && selectedCodes.ctprvn) {
       setLevel("sig");
+      setSelectedNames((prev) => ({ ctprvn: prev.ctprvn }));
     }
   };
 
   const handleGoRoot = () => {
     setLevel("ctprvn");
-    setSelectedCode(null);
+    setSelectedCodes({});
+    setSelectedNames({});
   };
 
   const handleGoUp = () => {
     if (level === "emd") {
       setLevel("sig");
+      setSelectedNames((prev) => ({ ctprvn: prev.ctprvn, sig: prev.sig }));
     } else if (level === "sig") {
       setLevel("ctprvn");
-      setSelectedCode(null);
+      setSelectedCodes({});
+      setSelectedNames({ ctprvn: selectedNames.ctprvn });
     }
   };
 
@@ -172,18 +196,18 @@ export function DashboardPage() {
   const bottom5 = [...sortedStats].reverse().slice(0, 5);
 
   const selectedParentName = useMemo(() => {
-    if (level === "ctprvn" || !selectedCode) return "전국";
+    if (level === "ctprvn" || !selectedCodes.ctprvn) return "전국";
     if (level === "sig") {
       const feature = (ctprvnGeo?.features ?? []).find(
-        (f: Feature<Geometry, any>) => String(f.properties?.code ?? "") === selectedCode
+        (f: Feature<Geometry, any>) => String(f.properties?.code ?? "") === selectedCodes.ctprvn
       ) as Feature<Geometry, any> | undefined;
       return feature ? getFeatureName("ctprvn", feature) : "-";
     }
     const feature = (sigGeo?.features ?? []).find(
-      (f: Feature<Geometry, any>) => String(f.properties?.code ?? "") === selectedCode
+      (f: Feature<Geometry, any>) => String(f.properties?.code ?? "") === selectedCodes.sig
     ) as Feature<Geometry, any> | undefined;
     return feature ? getFeatureName("sig", feature) : "-";
-  }, [level, selectedCode, ctprvnGeo, sigGeo]);
+  }, [level, selectedCodes, ctprvnGeo, sigGeo]);
 
   const selectedIndicator = useMemo(() => {
     return indicatorOptions.find((option) => option.key === indicatorKey) ?? indicatorOptions[0];
@@ -234,28 +258,53 @@ export function DashboardPage() {
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("level", level);
-    if (selectedCode) params.set("code", selectedCode);
+    if (selectedCodes.ctprvn) params.set("ctprvn", selectedCodes.ctprvn);
+    if (selectedCodes.sig) params.set("sig", selectedCodes.sig);
     params.set("indicator", indicatorKey);
     params.set("year", String(year));
     const url = `${window.location.pathname}?${params.toString()}`;
     window.history.pushState(null, "", url);
-  }, [level, selectedCode, indicatorKey, year]);
+  }, [level, selectedCodes, indicatorKey, year]);
 
   useEffect(() => {
     const handler = () => {
       const params = new URLSearchParams(window.location.search);
       const nextLevel = (params.get("level") as Level) || "ctprvn";
-      const nextCode = params.get("code");
+      const nextCtprvn = params.get("ctprvn") || undefined;
+      const nextSig = params.get("sig") || undefined;
       const nextIndicator = params.get("indicator") || indicatorOptions[0].key;
       const nextYear = Number(params.get("year") || 2024);
       setLevel(nextLevel);
-      setSelectedCode(nextLevel === "ctprvn" ? null : nextCode);
+      setSelectedCodes({ ctprvn: nextCtprvn, sig: nextSig });
       setIndicatorKey(nextIndicator);
       setYear(Number.isNaN(nextYear) ? 2024 : nextYear);
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
   }, []);
+
+  useEffect(() => {
+    if (level === "ctprvn") {
+      setSelectedNames({});
+      return;
+    }
+    if (selectedCodes.ctprvn && ctprvnGeo?.features) {
+      const feature = (ctprvnGeo.features as Feature<Geometry, any>[]).find(
+        (item) => String(item.properties?.code ?? "") === selectedCodes.ctprvn
+      );
+      if (feature) {
+        setSelectedNames((prev) => ({ ...prev, ctprvn: getFeatureName("ctprvn", feature) }));
+      }
+    }
+    if (selectedCodes.sig && sigGeo?.features) {
+      const feature = (sigGeo.features as Feature<Geometry, any>[]).find(
+        (item) => String(item.properties?.code ?? "") === selectedCodes.sig
+      );
+      if (feature) {
+        setSelectedNames((prev) => ({ ...prev, sig: getFeatureName("sig", feature) }));
+      }
+    }
+  }, [level, selectedCodes, ctprvnGeo, sigGeo]);
 
   const ageDistribution = [
     { label: "0-4", value: 1293 },
@@ -305,9 +354,9 @@ export function DashboardPage() {
       style={{
         display: "grid",
         gridTemplateColumns: "280px minmax(420px, 0.9fr) 340px",
-        gap: 16,
+        gap: 12,
         minHeight: "100vh",
-        padding: 16,
+        padding: 12,
         boxSizing: "border-box",
         fontFamily: "system-ui, -apple-system, sans-serif",
         background: "#f4f6fb",
@@ -318,72 +367,62 @@ export function DashboardPage() {
         style={{
           background: "#fff",
           borderRadius: 16,
-          padding: 16,
+          padding: 12,
           boxShadow: "0 8px 20px rgba(15, 23, 42, 0.08)",
           display: "flex",
           flexDirection: "column",
-          gap: 16,
+          gap: 12,
         }}
       >
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
             <span style={{ fontSize: 18, fontWeight: 700 }}>{selectedParentName}</span>
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#1d4ed8",
-                background: "#dbeafe",
-                padding: "2px 8px",
-                borderRadius: 999,
-              }}
-            >
-              {levelLabel[level]}
-            </span>
           </div>
           <div style={{ fontSize: 12, color: "#64748b" }}>정책형 드릴다운 대시보드</div>
         </div>
 
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", fontSize: 12 }}>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", fontSize: 12, color: "#475569" }}>
           <button
-            onClick={() => handleBreadcrumb("ctprvn")}
+            onClick={handleGoRoot}
             style={{
-              padding: "4px 8px",
-              borderRadius: 999,
-              border: "1px solid #e2e8f0",
-              background: level === "ctprvn" ? "#eff6ff" : "#fff",
-              color: "#1d4ed8",
+              padding: 0,
+              border: "none",
+              background: "transparent",
+              color: level === "ctprvn" ? "#1d4ed8" : "#475569",
               cursor: "pointer",
+              fontWeight: 600,
             }}
           >
             대한민국
           </button>
-          {level !== "ctprvn" && (
-            <button
-              onClick={() => handleBreadcrumb("sig")}
-              style={{
-                padding: "4px 8px",
-                borderRadius: 999,
-                border: "1px solid #e2e8f0",
-                background: level === "sig" ? "#eff6ff" : "#fff",
-                color: "#1d4ed8",
-                cursor: "pointer",
-              }}
-            >
-              {selectedParentName}
-            </button>
-          )}
-          {level === "emd" && selectedCode && (
+          {selectedNames.ctprvn && (
             <span
               style={{
-                padding: "4px 8px",
-                borderRadius: 999,
-                border: "1px solid #e2e8f0",
-                background: "#f8fafc",
-                color: "#475569",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
-              {selectedCode}
+              /
+              <button
+                onClick={() => handleBreadcrumb("sig")}
+                style={{
+                  padding: 0,
+                  border: "none",
+                  background: "transparent",
+                  color: level === "sig" ? "#1d4ed8" : "#475569",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >
+                {selectedNames.ctprvn}
+              </button>
+            </span>
+          )}
+          {selectedNames.sig && (
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              /
+              <span style={{ fontWeight: 600 }}>{selectedNames.sig}</span>
             </span>
           )}
         </div>
@@ -435,68 +474,6 @@ export function DashboardPage() {
           </div>
         </div>
 
-        <div>
-          <div style={{ fontWeight: 700, marginBottom: 8 }}>연도 선택</div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {[2020, 2021, 2022, 2023, 2024].map((y) => (
-              <button
-                key={y}
-                onClick={() => setYear(y)}
-                style={{
-                  padding: "6px 10px",
-                  borderRadius: 8,
-                  border: y === year ? "1px solid #2563eb" : "1px solid #e2e8f0",
-                  background: y === year ? "#eff6ff" : "#fff",
-                  cursor: "pointer",
-                  fontSize: 12,
-                }}
-              >
-                {y}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ display: "flex", gap: 8 }}>
-          <button
-            onClick={handleGoUp}
-            disabled={level === "ctprvn"}
-            style={{
-              padding: "6px 10px",
-              borderRadius: 8,
-              border: "1px solid #e2e8f0",
-              background: "#fff",
-              cursor: level === "ctprvn" ? "default" : "pointer",
-              fontSize: 12,
-            }}
-          >
-            이전 단계로
-          </button>
-          <button
-            onClick={handleGoRoot}
-            style={{
-              padding: "6px 10px",
-              borderRadius: 8,
-              border: "1px solid #e2e8f0",
-              background: "#eff6ff",
-              cursor: "pointer",
-              fontSize: 12,
-              color: "#1d4ed8",
-            }}
-          >
-            전국으로
-          </button>
-        </div>
-
-        <div style={{ background: "#eff6ff", borderRadius: 12, padding: 12, border: "1px solid #bfdbfe" }}>
-          <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 6, color: "#1d4ed8" }}>드릴다운 의미</div>
-          <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "#1e40af", lineHeight: 1.5 }}>
-            <li>시/군/구: 정책 집행 단위(예산/인력/기관 네트워크 운영)</li>
-            <li>읍/면/동: 현장 개입 단위(방문, 상담, 추적, 홍보 타겟팅)</li>
-            <li>고위험 많고 추적률 낮은 지역 → 인력·홍보 집중</li>
-            <li>대기열 긴 지역 → 협력기관 확충·우회 경로 제안</li>
-          </ul>
-        </div>
       </section>
 
       <section
@@ -508,7 +485,7 @@ export function DashboardPage() {
           display: "flex",
           flexDirection: "column",
           gap: 10,
-          height: "62vh",
+          height: "82vh",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -518,17 +495,9 @@ export function DashboardPage() {
               {selectedIndicator.label} · 클릭하여 상세 확인 (드릴다운)
             </div>
           </div>
-          <div style={{ display: "flex", gap: 6 }}>
-            <span style={{ fontSize: 11, color: "#1d4ed8", background: "#dbeafe", padding: "4px 8px", borderRadius: 999 }}>
-              {selectedParentName}
-            </span>
-            <span style={{ fontSize: 11, color: "#1e40af", background: "#dbeafe", padding: "4px 8px", borderRadius: 999 }}>
-              {levelLabel[level]}
-            </span>
-          </div>
         </div>
 
-        <div style={{ flex: 1, minHeight: 360, borderRadius: 12, overflow: "hidden", border: "1px solid #eef2f7" }}>
+        <div style={{ flex: 1, minHeight: 560, borderRadius: 12, overflow: "hidden", border: "1px solid #eef2f7" }}>
           <KoreaDrilldownMap
             level={level}
             features={currentFeatures}
