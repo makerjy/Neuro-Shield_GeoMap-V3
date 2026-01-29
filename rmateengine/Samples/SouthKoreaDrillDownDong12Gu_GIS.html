@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rMateMapChartH5 (RiaMore Soft)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<!-- rMateChartH5 라이센스 -->
+<script type="text/javascript" src="../LicenseKey/rMateMapChartH5License.js"></script>
+<!-- rMateMapChartH5 라이브러리 -->
+<script type="text/javascript" src="../rMateMapChartH5/JS/rMateMapChartH5.js"></script>
+<!-- rMateMapChartH5 CSS -->
+<link rel="stylesheet" type="text/css" href="../rMateMapChartH5/Assets/rMateMapChartH5.css"/>
+
+
+
+<script type="text/javascript">
+// -----------------------맵차트 설정 시작-----------------------
+// rMate 맵차트 생성 준비가 완료된 상태 시 호출할 함수를 지정합니다.
+var mapVars = "rMateOnLoadCallFunction=mapReadyHandler";
+
+// 맵차트의 속성인 rMateOnLoadCallFunction 으로 설정된 함수.
+// rMate 맵차트 준비가 완료된 경우 이 함수가 호출됩니다.
+// 이 함수를 통해 맵차트에 레이아웃과 데이터를 삽입합니다.
+// 파라메터 : id - rMateMapChartH5.create() 사용 시 사용자가 지정한 id 입니다.
+// 맵차트 콜백함수 7개 존재합니다.
+// 1. setLayout - 스트링으로 작성된 레이아웃 XML을 삽입합니다.
+// 2. setData - 배열로 작성된 데이터를 삽입합니다.
+// 3. setMapDataBase - 스트링으로 작성된 MapData XML을 삽입합니다.
+// 4. setLayoutURLEx - 레이아웃 XML 경로를 지시합니다.
+// 5. setDataURLEx - 데이터 XML 경로를 지시합니다.
+// 6. setMapDataBaseURLEx - MapData XML 경로를 지시합니다.
+// 7. setSourceURLEx - Map Source 경로를 지시합니다.
+var mapApp, mapRoot;
+
+function mapReadyHandler(id) {
+	document.getElementById(id).setLayout(layoutStr);
+	document.getElementById(id).setData(mapData);
+	document.getElementById(id).setMapDataBaseURLEx(mapDataBaseURL);
+	document.getElementById(id).setSourceURLEx(sourceURL);
+
+	function mapcomp() {
+		var mapObj = mapRoot.getMap();
+	}
+
+	mapApp = document.getElementById(id);
+	mapRoot = mapApp.getRoot();
+	mapRoot.addEventListener("creationComplete", mapcomp);
+}
+
+// Map Data 경로 정의
+// setMapDataBase함수로 mapDataBase를 문자열로 넣어줄 경우 주석처리나 삭제하십시오.
+var mapDataBaseURL = "./MapDataBaseXml/SouthKoreaDrillDownUMD_GIS.xml";
+
+// MapChart Source 선택
+// MapSource 디렉토리의 지도 이미지중 택일가능하며, 이외에 사용자가 작성한 별도의 Svg이미지를 지정할 수 있습니다.(매뉴얼 참조)
+var sourceURL = "./MapSource/SouthKoreaDrillDownUMD_GIS.svg";
+
+// rMateMapChart 를 생성합니다.
+// 파라메터 (순서대로) 
+//  1. 맵차트의 id ( 임의로 지정하십시오. ) 
+//  2. 맵차트가 위치할 div 의 id (즉, 차트의 부모 div 의 id 입니다.)
+//  3. 맵차트 생성 시 필요한 환경 변수들의 묶음인 chartVars
+//  4. 맵차트의 가로 사이즈 (생략 가능, 생략 시 100%)
+//  5. 맵차트의 세로 사이즈 (생략 가능, 생략 시 100%)
+rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%");
+
+
+
+
+var layoutStr = '\
+<?xml version="1.0" encoding="utf-8"?>\
+<rMateMapChart>\
+	<MapChart id="mainMap1" showDataTips="true" dataTipType="Type4" dataTipFill="#fff0f0" dataTipBorderColor="#fff0f0" dataTipColor="#ffffff" dataTipAlpha="1">\
+		<series>\
+			<MapSeries id="mapseries" interactive="true" selectionMarking="line" color="#777777" labelPosition="none" displayName="Map" useGis="true" dataTipFill="#ff007e" dataTipBorderColor="#ff007e" dataTipColor="#ffffff" dataTipAlpha="1" hideOverSizeLabel="false">\
+				<stroke>\
+					<Stroke color="#CAD7E0" weight="0.5" alpha="1"/>\
+				</stroke>\
+				<rollOverStroke>\
+					<Stroke color="#CAD7E0" weight="0.5" alpha="1"/>\
+				</rollOverStroke>\
+				<localFill>\
+					<SolidColor color="#EBF0F4"/>\
+				</localFill>\
+			</MapSeries>\
+			<MapPlotSeries id="plot1" areaCodeField="code" labelField="address" horizontalCenterGapField="h" verticalCenterGapField="v" adjustedRadius="5" fill="#ff007e" color="#888888" fontWeight="bold" labelPosition="bottom" displayName="지점" rangeLegendDataField="value" useGis="true" itemRenderer="CircleItemRenderer">\
+				<stroke>\
+					<Stroke color="#ff007e" weight="0" alpha="1"/>\
+				</stroke>\
+			</MapPlotSeries>\
+		</series>\
+	</MapChart>\
+</rMateMapChart>\
+';
+
+var mapData = [
+{"code":"0","address":"강원도","lat":37.885452,"lng":127.729783, "sales":100},
+{"code":"0","address":"강원도","lat":37.885452,"lng":127.729783, "sales":100},
+{"code":"0","address":"경기도","lat":37.274747,"lng":127.009594, "sales":100, "h":30},
+{"code":"0","address":"경상남도","lat":35.238292,"lng":128.692382, "sales":100},
+{"code":"0","address":"경상북도","lat":36.575972,"lng":128.505703, "sales":100},
+{"code":"0","address":"서울","lat":37.566277,"lng":126.977914, "sales":100},
+{"code":"0","address":"인천","lat":37.455893,"lng":126.70552, "sales":100,"h":-20,"v":-10},
+{"code":"0","address":"전라남도","lat":34.816236,"lng":126.462935, "sales":100},
+{"code":"0","address":"전라북도","lat":35.820279,"lng":127.10868, "sales":100},
+{"code":"0","address":"제주도","lat":33.488922,"lng":126.498021, "sales":100},
+{"code":"0","address":"충청남도","lat":36.659171,"lng":126.673212, "sales":100},
+{"code":"0","address":"충청북도","lat":36.635405,"lng":127.491462, "sales":100},
+{"code":"100","address":"강원도청","lat":37.885452,"lng":127.729783, "sales":90},
+{"code":"200","address":"경기도청","lat":37.274747,"lng":127.009594, "sales":100},
+{"code":"300","address":"경남도청","lat":35.238292,"lng":128.692382, "sales":100},
+{"code":"400","address":"경북도청","lat":36.575972,"lng":128.505703, "sales":100},
+{"code":"500","address":"광주시청","lat":35.160076,"lng":126.851318, "sales":100},
+{"code":"600","address":"대구시청","lat":35.871329,"lng":128.601742, "sales":100},
+{"code":"700","address":"대전시청","lat":36.350455,"lng":127.384547, "sales":100},
+{"code":"800","address":"부산시청","lat":35.179678,"lng":129.075029, "sales":100},
+{"code":"9000","address":"서울시청","lat":37.566277,"lng":126.977914, "sales":100},
+{"code":"1700","address":"세종시청","lat":36.592369,"lng":127.292199, "sales":100},
+{"code":"1000","address":"울산시청","lat":35.538774,"lng":129.311348, "sales":100},
+{"code":"1100","address":"인천시청","lat":37.455893,"lng":126.70552, "sales":100},
+{"code":"1200","address":"전남도청","lat":34.816236,"lng":126.462935, "sales":100},
+{"code":"1300","address":"전북도청","lat":35.820279,"lng":127.10868, "sales":100},
+{"code":"1400","address":"제주도청","lat":33.488922,"lng":126.498021, "sales":100},
+{"code":"1500","address":"충남도청","lat":36.659171,"lng":126.673212, "sales":100},
+{"code":"1600","address":"충북도청","lat":36.635405,"lng":127.491462, "sales":100},
+{"code":"90000","address":"서울시청","lat":37.566524,"lng":126.977917, "sales":100},
+{"code":"90200","address":"강동구청","lat":37.52995,"lng":127.123457, "sales":100},
+{"code":"90300","address":"강북구청","lat":37.639778,"lng":127.025509, "sales":100},
+{"code":"90400","address":"강서구청","lat":37.550875,"lng":126.849523, "sales":100},
+{"code":"90500","address":"관악구청","lat":37.478053,"lng":126.951481, "sales":100},
+{"code":"90600","address":"광진구청","lat":37.538501,"lng":127.082421, "sales":100},
+{"code":"90700","address":"구로구청","lat":37.495391,"lng":126.887473, "sales":100},
+{"code":"90800","address":"금천구청","lat":37.456859,"lng":126.895441, "sales":100},
+{"code":"90900","address":"노원구청","lat":37.65404,"lng":127.056394, "sales":100},
+{"code":"91000","address":"도봉구청","lat":37.668708,"lng":127.047064, "sales":100},
+{"code":"91100","address":"동대문구청","lat":37.574407,"lng":127.039764, "sales":100},
+{"code":"91200","address":"동작구청","lat":37.512353,"lng":126.939458, "sales":100},
+{"code":"91300","address":"마포구청","lat":37.566182,"lng":126.901637, "sales":100},
+{"code":"91400","address":"서대문구청","lat":37.579141,"lng":126.93678, "sales":100},
+{"code":"91500","address":"서초구청","lat":37.483229,"lng":127.03281, "sales":100},
+{"code":"91600","address":"성동구청","lat":37.563458,"lng":127.036969, "sales":100},
+{"code":"91700","address":"성북구청","lat":37.589349,"lng":127.016732, "sales":100},
+{"code":"91800","address":"송파구청","lat":37.514316,"lng":127.105972, "sales":100},
+{"code":"91900","address":"양천구청","lat":37.517003,"lng":126.866545, "sales":100},
+{"code":"92000","address":"영등포구청","lat":37.526312,"lng":126.896245, "sales":100},
+{"code":"92100","address":"용산구청","lat":37.532415,"lng":126.990266, "sales":100},
+{"code":"92200","address":"은평구청","lat":37.602637,"lng":126.929338, "sales":100},
+{"code":"92300","address":"종로구청","lat":37.573125,"lng":126.9795, "sales":100},
+{"code":"92400","address":"중구청","lat":37.563732,"lng":126.997487, "sales":100},
+{"code":"92500","address":"중랑구청","lat":37.606555,"lng":127.092637, "sales":100},
+{"code":"2020","address":"고양시청","lat":37.658313,"lng":126.831962, "sales":100},
+{"code":"2110","address":"부천시청","lat":37.503452,"lng":126.766059, "sales":100},
+{"code":"2120","address":"성남시청","lat":37.420099,"lng":127.126767, "sales":100},
+{"code":"2130","address":"수원시청","lat":37.263375,"lng":127.02858, "sales":100},
+{"code":"2150","address":"안산시청","lat":37.321862,"lng":126.830883, "sales":100},
+{"code":"2170","address":"안양시청","lat":37.394222,"lng":126.956847, "sales":100},
+{"code":"2230","address":"용인시청","lat":37.241035,"lng":127.1779, "sales":100},
+{"code":"16110","address":"청주시청","lat":36.642039,"lng":127.48879, "sales":100},
+{"code":"15130","address":"천안시청","lat":36.815129,"lng":127.113894, "sales":100},
+{"code":"13120","address":"전주시청","lat":35.824219,"lng":127.147958, "sales":100},
+{"code":"4230","address":"포항시청","lat":36.019047,"lng":129.343669, "sales":100},
+{"code":"3130","address":"창원시청","lat":35.227843,"lng":128.681732, "sales":100},
+
+	{
+		"address": "부산광역시 중구",
+		"code": 81500,
+		"lng": 129.0328898,
+		"lat": 35.10599979
+	},
+	{
+		"address": "부산광역시 서구",
+		"code": 81100,
+		"lng": 129.0132257,
+		"lat": 35.09330084
+	},
+	{
+		"address": "부산광역시 동구",
+		"code": 80500,
+		"lng": 129.0451075,
+		"lat": 35.12840235
+	},
+	{
+		"address": "부산광역시 영도구",
+		"code": 81400,
+		"lng": 129.0639379,
+		"lat": 35.07526221
+	},
+	{
+		"address": "부산광역시 부산진구",
+		"code": 80700,
+		"lng": 129.0465104,
+		"lat": 35.16676147
+	},
+	{
+		"address": "부산광역시 동래구",
+		"code": 80600,
+		"lng": 129.0799792,
+		"lat": 35.20506108
+	},
+	{
+		"address": "부산광역시 남구",
+		"code": 80400,
+		"lng": 129.0955615,
+		"lat": 35.12998417
+	},
+	{
+		"address": "부산광역시 북구",
+		"code": 80800,
+		"lng": 129.0242593,
+		"lat": 35.23407007
+	},
+	{
+		"address": "부산광역시 해운대구",
+		"code": 81600,
+		"lng": 129.1589813,
+		"lat": 35.19922047
+	},
+	{
+		"address": "부산광역시 사하구",
+		"code": 81000,
+		"lng": 128.9698275,
+		"lat": 35.07831646
+	},
+	{
+		"address": "부산광역시 금정구",
+		"code": 80200,
+		"lng": 129.090192,
+		"lat": 35.25789587
+	},
+	{
+		"address": "부산광역시 강서구",
+		"code": 80100,
+		"lng": 128.8956123,
+		"lat": 35.11121748
+	},
+	{
+		"address": "부산광역시 연제구",
+		"code": 81300,
+		"lng": 129.0810651,
+		"lat": 35.17882113
+	},
+	{
+		"address": "부산광역시 수영구",
+		"code": 81200,
+		"lng": 129.113766,
+		"lat": 35.16165378
+	},
+	{
+		"address": "부산광역시 사상구",
+		"code": 80900,
+		"lng": 128.9903417,
+		"lat": 35.15699629
+	},
+	{
+		"address": "부산광역시 기장군",
+		"code": 80300,
+		"lng": 129.2067247,
+		"lat": 35.28477456
+	},
+	{
+		"address": "대구광역시 중구",
+		"code": 60800,
+		"lng": 128.5942734,
+		"lat": 35.86722194
+	},
+	{
+		"address": "대구광역시 동구",
+		"code": 60400,
+		"lng": 128.682444,
+		"lat": 35.93352621
+	},
+	{
+		"address": "대구광역시 서구",
+		"code": 60600,
+		"lng": 128.5496553,
+		"lat": 35.87503456
+	},
+	{
+		"address": "대구광역시 남구",
+		"code": 60100,
+		"lng": 128.5819458,
+		"lat": 35.83388209
+	},
+	{
+		"address": "대구광역시 북구",
+		"code": 60500,
+		"lng": 128.5685121,
+		"lat": 35.93117946
+	},
+	{
+		"address": "대구광역시 수성구",
+		"code": 60700,
+		"lng": 128.6584484,
+		"lat": 35.83415314
+	},
+	{
+		"address": "대구광역시 달서구",
+		"code": 60200,
+		"lng": 128.5285503,
+		"lat": 35.82125642
+	},
+	{
+		"address": "대구광역시 달성군",
+		"code": 60300,
+		"lng": 128.5232967,
+		"lat": 35.77494654
+	},
+	{
+		"address": "인천광역시 중구",
+		"code": 111000,
+		"lng": 126.4992237,
+		"lat": 37.45342806
+	},
+	{
+		"address": "인천광역시 동구",
+		"code": 110500,
+		"lng": 126.640412,
+		"lat": 37.48217997
+	},
+	{
+		"address": "인천광역시 미추홀구",
+		"code": 110300,
+		"lng": 126.6660286,
+		"lat": 37.45712423
+	},
+	{
+		"address": "인천광역시 연수구",
+		"code": 110800,
+		"lng": 126.6511176,
+		"lat": 37.39086095
+	},
+	{
+		"address": "인천광역시 남동구",
+		"code": 110400,
+		"lng": 126.7238098,
+		"lat": 37.43033709
+	},
+	{
+		"address": "인천광역시 부평구",
+		"code": 110600,
+		"lng": 126.725479,
+		"lat": 37.4946409
+	},
+	{
+		"address": "인천광역시 계양구",
+		"code": 110200,
+		"lng": 126.7377314,
+		"lat": 37.55862879
+	},
+	{
+		"address": "인천광역시 서구",
+		"code": 110700,
+		"lng": 126.6404204,
+		"lat": 37.55584066
+	},
+	{
+		"address": "인천광역시 강화군",
+		"code": 110100,
+		"lng": 126.3344152,
+		"lat": 37.70643225
+	},
+	{
+		"address": "인천광역시 옹진군",
+		"code": 110900,
+		"lng": 125.5751504,
+		"lat": 37.50120905
+	},
+	{
+		"address": "광주광역시 동구",
+		"code": 50300,
+		"lng": 126.9525686,
+		"lat": 35.1190774
+	},
+	{
+		"address": "광주광역시 서구",
+		"code": 50500,
+		"lng": 126.8551657,
+		"lat": 35.13478119
+	},
+	{
+		"address": "광주광역시 남구",
+		"code": 50200,
+		"lng": 126.8413434,
+		"lat": 35.10240269
+	},
+	{
+		"address": "광주광역시 북구",
+		"code": 50400,
+		"lng": 126.929031,
+		"lat": 35.18672203
+	},
+	{
+		"address": "광주광역시 광산구",
+		"code": 50100,
+		"lng": 126.7530468,
+		"lat": 35.16428938
+	},
+	{
+		"address": "대전광역시 동구",
+		"code": 70200,
+		"lng": 127.485011,
+		"lat": 36.31377358
+	},
+	{
+		"address": "대전광역시 중구",
+		"code": 70500,
+		"lng": 127.4132583,
+		"lat": 36.27866185
+	},
+	{
+		"address": "대전광역시 서구",
+		"code": 70300,
+		"lng": 127.3406769,
+		"lat": 36.27840487
+	},
+	{
+		"address": "대전광역시 유성구",
+		"code": 70400,
+		"lng": 127.3326754,
+		"lat": 36.38216458
+	},
+	{
+		"address": "대전광역시 대덕구",
+		"code": 70100,
+		"lng": 127.4469225,
+		"lat": 36.41074873
+	},
+	{
+		"address": "울산광역시 중구",
+		"code": 100500,
+		"lng": 129.3054977,
+		"lat": 35.57189488
+	},
+	{
+		"address": "울산광역시 남구",
+		"code": 100100,
+		"lng": 129.3137644,
+		"lat": 35.5069707
+	},
+	{
+		"address": "울산광역시 동구",
+		"code": 100200,
+		"lng": 129.4235815,
+		"lat": 35.52187734
+	},
+	{
+		"address": "울산광역시 북구",
+		"code": 100300,
+		"lng": 129.3775805,
+		"lat": 35.59785398
+	},
+	{
+		"address": "울산광역시 울주군",
+		"code": 100400,
+		"lng": 129.1721275,
+		"lat": 35.52710572
+	},
+	{
+		"address": "세종특별자치시 세종시",
+		"code": 1700,
+		"lng": 127.2684928,
+		"lat": 36.57019982
+	},
+	{
+		"address": "경기도 수원시장안구",
+		"code": 2131,
+		"lng": 127.0004966,
+		"lat": 37.31854199
+	},
+	{
+		"address": "경기도 수원시권선구",
+		"code": 2132,
+		"lng": 126.9849,
+		"lat": 37.26368945
+	},
+	{
+		"address": "경기도 수원시팔달구",
+		"code": 2133,
+		"lng": 127.0108332,
+		"lat": 37.27486126
+	},
+	{
+		"address": "경기도 수원시영통구",
+		"code": 2134,
+		"lng": 127.0614438,
+		"lat": 37.27678115
+	},
+	{
+		"address": "경기도 성남시수정구",
+		"code": 2121,
+		"lng": 127.1092932,
+		"lat": 37.43590819
+	},
+	{
+		"address": "경기도 성남시중원구",
+		"code": 2122,
+		"lng": 127.1568734,
+		"lat": 37.4394168
+	},
+	{
+		"address": "경기도 성남시분당구",
+		"code": 2123,
+		"lng": 127.1019481,
+		"lat": 37.37518946
+	},
+	{
+		"address": "경기도 의정부시",
+		"code": 225,
+		"lng": 127.0740378,
+		"lat": 37.73334599
+	},
+	{
+		"address": "경기도 안양시만안구",
+		"code": 2171,
+		"lng": 126.9094,
+		"lat": 37.40351017
+	},
+	{
+		"address": "경기도 안양시동안구",
+		"code": 2172,
+		"lng": 126.9541058,
+		"lat": 37.40130796
+	},
+	{
+		"address": "경기도 광명시",
+		"code": 204,
+		"lng": 126.8632321,
+		"lat": 37.44830904
+	},
+	{
+		"address": "경기도 평택시",
+		"code": 228,
+		"lng": 126.9657136,
+		"lat": 37.02454036
+	},
+	{
+		"address": "경기도 동두천시",
+		"code": 210,
+		"lng": 127.0817767,
+		"lat": 37.92059511
+	},
+	{
+		"address": "경기도 안산시상록구",
+		"code": 2151,
+		"lng": 126.876631,
+		"lat": 37.32122527
+	},
+	{
+		"address": "경기도 안산시단원구",
+		"code": 2152,
+		"lng": 126.6114313,
+		"lat": 37.22648973
+	},
+	{
+		"address": "경기도 고양시덕양구",
+		"code": 2023,
+		"lng": 126.8834744,
+		"lat": 37.66196274
+	},
+	{
+		"address": "경기도 고양시일산동구",
+		"code": 2022,
+		"lng": 126.7979168,
+		"lat": 37.67967715
+	},
+	{
+		"address": "경기도 고양시일산서구",
+		"code": 2021,
+		"lng": 126.723797,
+		"lat": 37.67216435
+	},
+	{
+		"address": "경기도 과천시",
+		"code": 203,
+		"lng": 127.0044396,
+		"lat": 37.43396711
+	},
+	{
+		"address": "경기도 구리시",
+		"code": 206,
+		"lng": 127.1352562,
+		"lat": 37.60229529
+	},
+	{
+		"address": "경기도 남양주시",
+		"code": 209,
+		"lng": 127.2302462,
+		"lat": 37.64379302
+	},
+	{
+		"address": "경기도 오산시",
+		"code": 222,
+		"lng": 127.0493996,
+		"lat": 37.16297693
+	},
+	{
+		"address": "경기도 시흥시",
+		"code": 214,
+		"lng": 126.7764882,
+		"lat": 37.39004318
+	},
+	{
+		"address": "경기도 군포시",
+		"code": 207,
+		"lng": 126.9175576,
+		"lat": 37.34213621
+	},
+	{
+		"address": "경기도 의왕시",
+		"code": 224,
+		"lng": 126.9881957,
+		"lat": 37.35814168
+	},
+	{
+		"address": "경기도 하남시",
+		"code": 230,
+		"lng": 127.2139048,
+		"lat": 37.53052121
+	},
+	{
+		"address": "경기도 용인시처인구",
+		"code": 2233,
+		"lng": 127.2692461,
+		"lat": 37.22245829
+	},
+	{
+		"address": "경기도 용인시기흥구",
+		"code": 2232,
+		"lng": 127.1208785,
+		"lat": 37.27008174
+	},
+	{
+		"address": "경기도 용인시수지구",
+		"code": 2231,
+		"lng": 127.0792979,
+		"lat": 37.33285635
+	},
+	{
+		"address": "경기도 파주시",
+		"code": 227,
+		"lng": 126.8381964,
+		"lat": 37.84690001
+	},
+	{
+		"address": "경기도 이천시",
+		"code": 226,
+		"lng": 127.4843365,
+		"lat": 37.20223299
+	},
+	{
+		"address": "경기도 안성시",
+		"code": 216,
+		"lng": 127.310351,
+		"lat": 37.02470355
+	},
+	{
+		"address": "경기도 김포시",
+		"code": 208,
+		"lng": 126.65975,
+		"lat": 37.68612873
+	},
+	{
+		"address": "경기도 화성시",
+		"code": 231,
+		"lng": 126.8491728,
+		"lat": 37.15302881
+	},
+	{
+		"address": "경기도 광주시",
+		"code": 205,
+		"lng": 127.2888812,
+		"lat": 37.40096062
+	},
+	{
+		"address": "경기도 양주시",
+		"code": 218,
+		"lng": 127.0121568,
+		"lat": 37.80536899
+	},
+	{
+		"address": "경기도 포천시",
+		"code": 229,
+		"lng": 127.268653,
+		"lat": 37.9708888
+	},
+	{
+		"address": "경기도 여주시",
+		"code": 220,
+		"lng": 127.5833919,
+		"lat": 37.2874346
+	},
+	{
+		"address": "경기도 연천군",
+		"code": 221,
+		"lng": 126.9700846,
+		"lat": 38.10969183
+	},
+	{
+		"address": "경기도 가평군",
+		"code": 201,
+		"lng": 127.4421274,
+		"lat": 37.81140881
+	},
+	{
+		"address": "경기도 양평군",
+		"code": 219,
+		"lng": 127.5771072,
+		"lat": 37.51929426
+	},
+	{
+		"address": "강원도 춘천시",
+		"code": 113,
+		"lng": 127.7680028,
+		"lat": 37.88043732
+	},
+	{
+		"address": "강원도 원주시",
+		"code": 109,
+		"lng": 127.9807072,
+		"lat": 37.32561302
+	},
+	{
+		"address": "강원도 강릉시",
+		"code": 101,
+		"lng": 128.8267135,
+		"lat": 37.71075135
+	},
+	{
+		"address": "강원도 동해시",
+		"code": 103,
+		"lng": 129.0590649,
+		"lat": 37.51631957
+	},
+	{
+		"address": "강원도 태백시",
+		"code": 114,
+		"lng": 128.9814833,
+		"lat": 37.20407376
+	},
+	{
+		"address": "강원도 속초시",
+		"code": 105,
+		"lng": 128.5172108,
+		"lat": 38.17520785
+	},
+	{
+		"address": "강원도 삼척시",
+		"code": 104,
+		"lng": 129.1049585,
+		"lat": 37.25777862
+	},
+	{
+		"address": "강원도 홍천군",
+		"code": 116,
+		"lng": 128.0616368,
+		"lat": 37.74924939
+	},
+	{
+		"address": "강원도 횡성군",
+		"code": 118,
+		"lng": 128.0308226,
+		"lat": 37.49157017
+	},
+	{
+		"address": "강원도 영월군",
+		"code": 108,
+		"lng": 128.511394,
+		"lat": 37.21826649
+	},
+	{
+		"address": "강원도 평창군",
+		"code": 115,
+		"lng": 128.5044335,
+		"lat": 37.54390271
+	},
+	{
+		"address": "강원도 정선군",
+		"code": 111,
+		"lng": 128.748332,
+		"lat": 37.37032024
+	},
+	{
+		"address": "강원도 철원군",
+		"code": 112,
+		"lng": 127.3597187,
+		"lat": 38.21525973
+	},
+	{
+		"address": "강원도 화천군",
+		"code": 117,
+		"lng": 127.6724441,
+		"lat": 38.1730432
+	},
+	{
+		"address": "강원도 양구군",
+		"code": 106,
+		"lng": 127.9947619,
+		"lat": 38.17250336
+	},
+	{
+		"address": "강원도 인제군",
+		"code": 110,
+		"lng": 128.24514,
+		"lat": 38.094737
+	},
+	{
+		"address": "강원도 고성군",
+		"code": 102,
+		"lng": 128.3969355,
+		"lat": 38.40308708
+	},
+	{
+		"address": "강원도 양양군",
+		"code": 107,
+		"lng": 128.6071374,
+		"lat": 38.01177959
+	},
+	{
+		"address": "충청북도 충주시",
+		"code": 1612,
+		"lng": 127.892473,
+		"lat": 37.00658294
+	},
+	{
+		"address": "충청북도 제천시",
+		"code": 1607,
+		"lng": 128.1262662,
+		"lat": 37.03558584
+	},
+	{
+		"address": "충청북도 청주시상당구",
+		"code": 16113,
+		"lng": 127.6078788,
+		"lat": 36.5664476
+	},
+	{
+		"address": "충청북도 청주시서원구",
+		"code": 16114,
+		"lng": 127.4363811,
+		"lat": 36.54810574
+	},
+	{
+		"address": "충청북도 청주시흥덕구",
+		"code": 16112,
+		"lng": 127.3790771,
+		"lat": 36.64345776
+	},
+	{
+		"address": "충청북도 청주시청원구",
+		"code": 16111,
+		"lng": 127.4678615,
+		"lat": 36.71218218
+	},
+	{
+		"address": "충청북도 보은군",
+		"code": 1603,
+		"lng": 127.7112253,
+		"lat": 36.49127927
+	},
+	{
+		"address": "충청북도 옥천군",
+		"code": 1605,
+		"lng": 127.6887558,
+		"lat": 36.30788932
+	},
+	{
+		"address": "충청북도 영동군",
+		"code": 1604,
+		"lng": 127.8265812,
+		"lat": 36.16430829
+	},
+	{
+		"address": "충청북도 진천군",
+		"code": 1609,
+		"lng": 127.4374689,
+		"lat": 36.88007793
+	},
+	{
+		"address": "충청북도 괴산군",
+		"code": 1601,
+		"lng": 127.8472792,
+		"lat": 36.77473928
+	},
+	{
+		"address": "충청북도 음성군",
+		"code": 1606,
+		"lng": 127.621843,
+		"lat": 36.99402403
+	},
+	{
+		"address": "충청북도 단양군",
+		"code": 1602,
+		"lng": 128.4347841,
+		"lat": 36.97934722
+	},
+	{
+		"address": "충청북도 증평군",
+		"code": 1608,
+		"lng": 127.6009963,
+		"lat": 36.78000693
+	},
+	{
+		"address": "충청남도 천안시동남구",
+		"code": 15131,
+		"lng": 127.2151619,
+		"lat": 36.75634922
+	},
+	{
+		"address": "충청남도 천안시서북구",
+		"code": 15132,
+		"lng": 127.1822735,
+		"lat": 36.87810613
+	},
+	{
+		"address": "충청남도 공주시",
+		"code": 1502,
+		"lng": 127.0831145,
+		"lat": 36.47821955
+	},
+	{
+		"address": "충청남도 보령시",
+		"code": 1506,
+		"lng": 126.3467046,
+		"lat": 36.35080435
+	},
+	{
+		"address": "충청남도 아산시",
+		"code": 1510,
+		"lng": 126.9748878,
+		"lat": 36.79434831
+	},
+	{
+		"address": "충청남도 서산시",
+		"code": 1508,
+		"lng": 126.4844194,
+		"lat": 36.81266226
+	},
+	{
+		"address": "충청남도 논산시",
+		"code": 1504,
+		"lng": 127.1585635,
+		"lat": 36.20161504
+	},
+	{
+		"address": "충청남도 계룡시",
+		"code": 1501,
+		"lng": 127.2437632,
+		"lat": 36.29057794
+	},
+	{
+		"address": "충청남도 당진시",
+		"code": 1505,
+		"lng": 126.6386873,
+		"lat": 36.90670681
+	},
+	{
+		"address": "충청남도 금산군",
+		"code": 1503,
+		"lng": 127.4781721,
+		"lat": 36.12509816
+	},
+	{
+		"address": "충청남도 부여군",
+		"code": 1507,
+		"lng": 126.8750824,
+		"lat": 36.22800869
+	},
+	{
+		"address": "충청남도 서천군",
+		"code": 1509,
+		"lng": 126.6816046,
+		"lat": 36.09279497
+	},
+	{
+		"address": "충청남도 청양군",
+		"code": 1514,
+		"lng": 126.8504661,
+		"lat": 36.44364741
+	},
+	{
+		"address": "충청남도 홍성군",
+		"code": 1516,
+		"lng": 126.6055655,
+		"lat": 36.56656857
+	},
+	{
+		"address": "충청남도 예산군",
+		"code": 1512,
+		"lng": 126.7775078,
+		"lat": 36.6652945
+	},
+	{
+		"address": "충청남도 태안군",
+		"code": 1515,
+		"lng": 125.9885852,
+		"lat": 36.6892951
+	},
+	{
+		"address": "전라북도 전주시완산구",
+		"code": 13122,
+		"lng": 127.1343735,
+		"lat": 35.7866443
+	},
+	{
+		"address": "전라북도 전주시덕진구",
+		"code": 13121,
+		"lng": 127.1165566,
+		"lat": 35.85156594
+	},
+	{
+		"address": "전라북도 군산시",
+		"code": 1302,
+		"lng": 126.4410062,
+		"lat": 35.92672331
+	},
+	{
+		"address": "전라북도 익산시",
+		"code": 1309,
+		"lng": 126.9968527,
+		"lat": 36.01988647
+	},
+	{
+		"address": "전라북도 정읍시",
+		"code": 1313,
+		"lng": 126.9178662,
+		"lat": 35.60984833
+	},
+	{
+		"address": "전라북도 남원시",
+		"code": 1304,
+		"lng": 127.4281167,
+		"lat": 35.43190069
+	},
+	{
+		"address": "전라북도 김제시",
+		"code": 1303,
+		"lng": 126.8859015,
+		"lat": 35.79309576
+	},
+	{
+		"address": "전라북도 완주군",
+		"code": 1308,
+		"lng": 127.1869985,
+		"lat": 35.87469189
+	},
+	{
+		"address": "전라북도 진안군",
+		"code": 1314,
+		"lng": 127.4467732,
+		"lat": 35.82338592
+	},
+	{
+		"address": "전라북도 무주군",
+		"code": 1305,
+		"lng": 127.7180991,
+		"lat": 35.92828885
+	},
+	{
+		"address": "전라북도 장수군",
+		"code": 1311,
+		"lng": 127.5306135,
+		"lat": 35.65385719
+	},
+	{
+		"address": "전라북도 임실군",
+		"code": 1310,
+		"lng": 127.2593508,
+		"lat": 35.61846135
+	},
+	{
+		"address": "전라북도 순창군",
+		"code": 1307,
+		"lng": 127.0872665,
+		"lat": 35.42756522
+	},
+	{
+		"address": "전라북도 고창군",
+		"code": 1301,
+		"lng": 126.6008207,
+		"lat": 35.43786191
+	},
+	{
+		"address": "전라북도 부안군",
+		"code": 1306,
+		"lng": 126.4692333,
+		"lat": 35.68378203
+	},
+	{
+		"address": "전라남도 목포시",
+		"code": 1208,
+		"lng": 126.3767413,
+		"lat": 34.7944784
+	},
+	{
+		"address": "전라남도 여수시",
+		"code": 1213,
+		"lng": 127.5095547,
+		"lat": 34.45414719
+	},
+	{
+		"address": "전라남도 순천시",
+		"code": 1211,
+		"lng": 127.3844136,
+		"lat": 35.00998518
+	},
+	{
+		"address": "전라남도 나주시",
+		"code": 1206,
+		"lng": 126.7066553,
+		"lat": 34.98913677
+	},
+	{
+		"address": "전라남도 광양시",
+		"code": 1204,
+		"lng": 127.6563748,
+		"lat": 35.03542463
+	},
+	{
+		"address": "전라남도 담양군",
+		"code": 1207,
+		"lng": 126.9857903,
+		"lat": 35.29082292
+	},
+	{
+		"address": "전라남도 곡성군",
+		"code": 1203,
+		"lng": 127.246535,
+		"lat": 35.20370365
+	},
+	{
+		"address": "전라남도 구례군",
+		"code": 1205,
+		"lng": 127.4957633,
+		"lat": 35.23072734
+	},
+	{
+		"address": "전라남도 고흥군",
+		"code": 1202,
+		"lng": 127.3139287,
+		"lat": 34.60341058
+	},
+	{
+		"address": "전라남도 보성군",
+		"code": 1210,
+		"lng": 127.2210484,
+		"lat": 34.81184515
+	},
+	{
+		"address": "전라남도 화순군",
+		"code": 1222,
+		"lng": 127.0127854,
+		"lat": 35.01929697
+	},
+	{
+		"address": "전라남도 장흥군",
+		"code": 1218,
+		"lng": 126.919926,
+		"lat": 34.64955924
+	},
+	{
+		"address": "전라남도 강진군",
+		"code": 1201,
+		"lng": 126.7709836,
+		"lat": 34.61765061
+	},
+	{
+		"address": "전라남도 해남군",
+		"code": 1221,
+		"lng": 126.4878372,
+		"lat": 34.52733375
+	},
+	{
+		"address": "전라남도 영암군",
+		"code": 1215,
+		"lng": 126.6108269,
+		"lat": 34.80562747
+	},
+	{
+		"address": "전라남도 무안군",
+		"code": 1209,
+		"lng": 126.3975079,
+		"lat": 34.96818248
+	},
+	{
+		"address": "전라남도 함평군",
+		"code": 1220,
+		"lng": 126.5202795,
+		"lat": 35.10422758
+	},
+	{
+		"address": "전라남도 영광군",
+		"code": 1214,
+		"lng": 126.3148428,
+		"lat": 35.29789683
+	},
+	{
+		"address": "전라남도 장성군",
+		"code": 1217,
+		"lng": 126.7545268,
+		"lat": 35.33857137
+	},
+	{
+		"address": "전라남도 완도군",
+		"code": 1216,
+		"lng": 126.7919064,
+		"lat": 34.21465294
+	},
+	{
+		"address": "전라남도 진도군",
+		"code": 1219,
+		"lng": 126.1118534,
+		"lat": 34.36515155
+	},
+	{
+		"address": "전라남도 신안군",
+		"code": 1212,
+		"lng": 125.7304974,
+		"lat": 34.59725419
+	},
+	{
+		"address": "경상북도 포항시남구",
+		"code": 4232,
+		"lng": 129.4307651,
+		"lat": 35.96296378
+	},
+	{
+		"address": "경상북도 포항시북구",
+		"code": 4231,
+		"lng": 129.2141744,
+		"lat": 36.17369965
+	},
+	{
+		"address": "경상북도 경주시",
+		"code": 402,
+		"lng": 129.2453365,
+		"lat": 35.85992192
+	},
+	{
+		"address": "경상북도 김천시",
+		"code": 406,
+		"lng": 128.0881105,
+		"lat": 36.04356912
+	},
+	{
+		"address": "경상북도 안동시",
+		"code": 411,
+		"lng": 128.7152532,
+		"lat": 36.55947711
+	},
+	{
+		"address": "경상북도 구미시",
+		"code": 404,
+		"lng": 128.3485379,
+		"lat": 36.21156569
+	},
+	{
+		"address": "경상북도 영주시",
+		"code": 414,
+		"lng": 128.5848918,
+		"lat": 36.88054907
+	},
+	{
+		"address": "경상북도 영천시",
+		"code": 415,
+		"lng": 128.9234081,
+		"lat": 36.00764926
+	},
+	{
+		"address": "경상북도 상주시",
+		"code": 409,
+		"lng": 128.0681017,
+		"lat": 36.44735466
+	},
+	{
+		"address": "경상북도 문경시",
+		"code": 407,
+		"lng": 128.1233817,
+		"lat": 36.6931773
+	},
+	{
+		"address": "경상북도 경산시",
+		"code": 401,
+		"lng": 128.8260466,
+		"lat": 35.84681464
+	},
+	{
+		"address": "경상북도 군위군",
+		"code": 405,
+		"lng": 128.6556699,
+		"lat": 36.1673375
+	},
+	{
+		"address": "경상북도 의성군",
+		"code": 419,
+		"lng": 128.5903193,
+		"lat": 36.3625596
+	},
+	{
+		"address": "경상북도 청송군",
+		"code": 421,
+		"lng": 129.0532337,
+		"lat": 36.37768073
+	},
+	{
+		"address": "경상북도 영양군",
+		"code": 413,
+		"lng": 129.1485374,
+		"lat": 36.68524166
+	},
+	{
+		"address": "경상북도 영덕군",
+		"code": 412,
+		"lng": 129.300723,
+		"lat": 36.47017975
+	},
+	{
+		"address": "경상북도 청도군",
+		"code": 420,
+		"lng": 128.786845,
+		"lat": 35.70608825
+	},
+	{
+		"address": "경상북도 고령군",
+		"code": 403,
+		"lng": 128.3194026,
+		"lat": 35.73098313
+	},
+	{
+		"address": "경상북도 성주군",
+		"code": 410,
+		"lng": 128.2255409,
+		"lat": 35.91629905
+	},
+	{
+		"address": "경상북도 칠곡군",
+		"code": 422,
+		"lng": 128.4627801,
+		"lat": 36.004338
+	},
+	{
+		"address": "경상북도 예천군",
+		"code": 416,
+		"lng": 128.4351706,
+		"lat": 36.65216371
+	},
+	{
+		"address": "경상북도 봉화군",
+		"code": 408,
+		"lng": 128.9114009,
+		"lat": 36.923259
+	},
+	{
+		"address": "경상북도 울진군",
+		"code": 418,
+		"lng": 129.2783674,
+		"lat": 36.89490012
+	},
+	{
+		"address": "경상북도 울릉군",
+		"code": 417,
+		"lng": 131.3302895,
+		"lat": 37.39553641
+	},
+	{
+		"address": "경상남도 진주시",
+		"code": 311,
+		"lng": 128.1280574,
+		"lat": 35.20068711
+	},
+	{
+		"address": "경상남도 통영시",
+		"code": 314,
+		"lng": 128.355115,
+		"lat": 34.75690159
+	},
+	{
+		"address": "경상남도 사천시",
+		"code": 307,
+		"lng": 128.0319894,
+		"lat": 35.02228724
+	},
+	{
+		"address": "경상남도 김해시",
+		"code": 304,
+		"lng": 128.8536201,
+		"lat": 35.27342322
+	},
+	{
+		"address": "경상남도 밀양시",
+		"code": 306,
+		"lng": 128.798549,
+		"lat": 35.49588908
+	},
+	{
+		"address": "경상남도 거제시",
+		"code": 301,
+		"lng": 128.6051226,
+		"lat": 34.86131028
+	},
+	{
+		"address": "경상남도 양산시",
+		"code": 309,
+		"lng": 129.0461998,
+		"lat": 35.40113372
+	},
+	{
+		"address": "경상남도 창원시의창구",
+		"code": 3131,
+		"lng": 128.6608278,
+		"lat": 35.30442151
+	},
+	{
+		"address": "경상남도 창원시성산구",
+		"code": 3133,
+		"lng": 128.6707896,
+		"lat": 35.19701666
+	},
+	{
+		"address": "경상남도 창원시마산합포구",
+		"code": 3134,
+		"lng": 128.4934282,
+		"lat": 35.13704612
+	},
+	{
+		"address": "경상남도 창원시마산회원구",
+		"code": 3132,
+		"lng": 128.5499301,
+		"lat": 35.22718048
+	},
+	{
+		"address": "경상남도 창원시진해구",
+		"code": 3135,
+		"lng": 128.7248219,
+		"lat": 35.11820289
+	},
+	{
+		"address": "경상남도 의령군",
+		"code": 310,
+		"lng": 128.2584302,
+		"lat": 35.38624822
+	},
+	{
+		"address": "경상남도 함안군",
+		"code": 316,
+		"lng": 128.4327387,
+		"lat": 35.28159278
+	},
+	{
+		"address": "경상남도 창녕군",
+		"code": 312,
+		"lng": 128.5024996,
+		"lat": 35.52688688
+	},
+	{
+		"address": "경상남도 고성군",
+		"code": 303,
+		"lng": 128.3029476,
+		"lat": 35.00795794
+	},
+	{
+		"address": "경상남도 남해군",
+		"code": 305,
+		"lng": 127.9469331,
+		"lat": 34.81310079
+	},
+	{
+		"address": "경상남도 하동군",
+		"code": 315,
+		"lng": 127.7592333,
+		"lat": 35.12817459
+	},
+	{
+		"address": "경상남도 산청군",
+		"code": 308,
+		"lng": 127.9015727,
+		"lat": 35.39790286
+	},
+	{
+		"address": "경상남도 함양군",
+		"code": 317,
+		"lng": 127.7313155,
+		"lat": 35.54389714
+	},
+	{
+		"address": "경상남도 거창군",
+		"code": 302,
+		"lng": 127.8870501,
+		"lat": 35.71451381
+	},
+	{
+		"address": "경상남도 합천군",
+		"code": 318,
+		"lng": 128.1631695,
+		"lat": 35.60036325
+	},
+	{
+		"address": "제주특별자치도 제주시",
+		"code": 1402,
+		"lng": 126.5582835,
+		"lat": 33.64320459
+	},
+	{
+		"address": "제주특별자치도 서귀포시",
+		"code": 1401,
+		"lng": 126.5582559,
+		"lat": 33.29792657
+	},
+	{
+		"address": "경기도 부천시",
+		"code": 211,
+		"lng": 126.7875901,
+		"lat": 37.50626094
+	}
+];
+// -----------------------맵차트 설정 끝 -----------------------
+
+</script>
+<!-- 샘플 작동을 위한 css와 js -->
+<script type="text/javascript" src="./Web/JS/common.js"></script>
+<script type="text/javascript" src="./Web/JS/sample_util.js"></script>
+<link rel="stylesheet" type="text/css" href="./Web/sample.css"/>
+
+<!-- SyntaxHighlighter -->
+<script type="text/javascript" src="./Web/syntax/shCore.js"></script>
+<script type="text/javascript" src="./Web/syntax/shBrushJScript.js"></script>
+<link type="text/css" rel="stylesheet" href="./Web/syntax/shCoreDefault.css"/>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="header">
+			<div class="headerTitle">GIS 데이터(위/경도)로 지역위치 설정</div>
+		</div>
+		<div id="content">
+			<!-- 차트가 삽입될 DIV -->
+			<div id="mapHolder"></div>
+		</div>
+		<div class="description">
+		GIS 데이터를 이용하여 좌표계를 설정한 예제입니다.<br>
+		데이터에 code(지역코드), lat (위도), lng (경도) 값을 설정하여 주시면<br>
+		해당 code 지역에 GIS 좌표 위치로 표시 됩니다.<br>
+		※ WGS84 좌표계를 이용하셔야 합니다.<br>
+		</div>
+
+		<div id="updater">
+						<div id="updaterTab">
+				<ul id="updaterTabUl">
+					<li id="updaterTabUlSource" class="active_tab">Source</li>
+					<li id="updaterTabUlLayout" class="non_active_li">Layout</li>
+					<li id="updaterTabUlData" class="non_active_li">Data</li>
+					<li id="updaterTabUlBlank">
+						<div id="btn_update">수정적용</div>
+					</li>
+				</ul>
+			</div>
+			<div id="updaterTarea">
+				<pre id="updaterTareaSource" class="brush:js toolbar:false" name="updaterTareaSource"></pre>
+				<textarea id="updaterTareaLayout" class="updaterTextarea" spellcheck="false"></textarea>
+				<textarea id="updaterTareaData" class="updaterTextarea" spellcheck="false"></textarea>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

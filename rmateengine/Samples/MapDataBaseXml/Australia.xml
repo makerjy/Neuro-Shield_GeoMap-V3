@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="StateofNewSouthWales" symbol="StateofNewSouthWales"/>
+	<State code="200" label="Queensland" symbol="Queensland"/>
+	<State code="300" label="SouthAustralia" symbol="SouthAustralia"/>
+	<State code="400" label="Tasmania" symbol="Tasmania"/>
+	<State code="500" label="Victoria" symbol="Victoria"/>
+	<State code="600" label="WesternAustralia" symbol="WesternAustralia"/>
+	<State code="700" label="NorthernTerritory" symbol="NorthernTerritory"/>
+</Map>

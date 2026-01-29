@@ -1,0 +1,19 @@
+﻿[
+{ "code": 100, "sales":65, "profit":540 },
+{ "code": 200, "sales":85.9, "profit":17.7 },
+{ "code": 300, "sales":36.7, "profit":125.6 },
+{ "code": 400, "sales":55.9, "profit":43.7 },
+{ "code": 500, "sales":121.1, "profit":155.9 },
+{ "code": 600, "sales":25.5, "profit":120.5 },
+{ "code": 700, "sales":64.8, "profit":98.3 },
+{ "code": 800, "sales":70.5, "profit":148.7 },
+{ "code": 900, "sales":115.8, "profit":40.0 },
+{ "code": 1000, "sales":89.3, "profit":133.7 },
+{ "code": 1100, "sales":49.5, "profit":34.7 },
+{ "code": 1200, "sales":21.3, "profit":145.5 },
+{ "code": 1300, "sales":13.5, "profit":113.2 },
+{ "code": 1400, "sales":51.7, "profit":213.2 },
+{ "code": 1500, "sales":21.9, "profit":71.7 },
+{ "code": 1600, "sales":45.4, "profit":62.6 },
+{ "code": 1700, "sales":10.2, "profit":8.6 }
+]

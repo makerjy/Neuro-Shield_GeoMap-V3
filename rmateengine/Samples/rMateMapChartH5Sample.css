@@ -1,0 +1,93 @@
+html, body {
+	width: 100%;
+	font: 100%/1.4 맑은 고딕, Arial, Verdana, Helvetica, sans-serif;
+	margin: 0px 0px 0px 0px;
+	padding: 0;
+	overflow: hidden;
+}
+
+#header {
+	height: 30px;
+	margin: 3px auto 10px 80px;
+}
+
+#mapHolder {
+	margin: 0 auto 0 100px;
+	width: 600px;
+	height: 500px;
+}
+
+#footer {
+	font-family: arial, 맑은 고딕;
+	font-size: 16px;
+	*font-weight: bold;
+	color: #888888;
+	background-color: #ffffff;
+	width: 715px;
+	padding-top: 35px;
+	margin-left: 75px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	padding-left: 10px;
+}
+
+.content {
+	padding-right: 40px;
+}
+
+.button {
+	float: right;
+	color: #666666;
+	background-color: #f9f9f9;
+	font-family: arial, 맑은 고딕;
+	font-size: 11px;
+	text-align: center;
+	margin: 0px 0px 0px 5px;
+	padding: 3px 10px 5px 10px;
+	letter-spacing: 1px;
+	cursor: pointer;
+	border: solid 1px #cccccc;
+	border-bottom: solid 1px #ababab;
+}
+
+/*
+ button mouseover
+ */
+.button:hover {
+	color: #454545;
+	background-color: #a6f4ff;
+	border: solid 1px #26a0da;
+}
+
+.button {
+	float: left;
+	/*margin-top:24px;*/
+}
+
+.button:hover {
+	color: #454545;
+	background-color: #a6f4ff;
+	border: solid 1px #26a0da;
+}
+
+.more {
+	color: #f66200;
+	text-decoration: underline;
+}
+
+.textForm {
+	float: left;
+	height:19px;
+	color: #666666;
+	background-color: #f9f9f9;
+	font-family: arial, 맑은 고딕;
+	font-size: 11px;
+	text-align: center;
+	margin: 0px 0px 0px 5px;
+	padding: 0px;
+	letter-spacing: 1px;
+}
+
+.active {
+	background-color: #a6f4ff;
+}

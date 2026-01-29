@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="Northland" symbol="Northland"/>
+	<State code="200" label="Auckland" symbol="Auckland"/>
+	<State code="300" label="Waikato" symbol="Waikato"/>
+	<State code="400" label="BayofPlenty" symbol="BayofPlenty"/>
+	<State code="500" label="Gisborne" symbol="Gisborne"/>
+	<State code="600" label="HawkesBay" symbol="HawkesBay"/>
+	<State code="700" label="Taranaki" symbol="Taranaki"/>
+	<State code="800" label="ManawatuWanganui" symbol="ManawatuWanganui"/>
+	<State code="900" label="Wellington" symbol="Wellington"/>
+	<State code="1000" label="Tasman" symbol="Tasman"/>
+	<State code="1100" label="Nelson" symbol="Nelson"/>
+	<State code="1200" label="Marlborough" symbol="Marlborough"/>
+	<State code="1300" label="WestCoast" symbol="WestCoast"/>
+	<State code="1400" label="Canterbury" symbol="Canterbury"/>
+	<State code="1500" label="Otago" symbol="Otago"/>
+	<State code="1600" label="Southland" symbol="Southland"/>
+</Map>

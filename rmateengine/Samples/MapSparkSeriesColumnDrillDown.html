@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rMateMapChartH5 (RiaMore Soft)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<!-- rMateChartH5 라이센스 -->
+<script type="text/javascript" src="../LicenseKey/rMateMapChartH5License.js"></script>
+<!-- rMateMapChartH5 라이브러리 -->
+<script type="text/javascript" src="../rMateMapChartH5/JS/rMateMapChartH5.js"></script>
+<!-- rMateMapChartH5 CSS -->
+<link rel="stylesheet" type="text/css" href="../rMateMapChartH5/Assets/rMateMapChartH5.css"/>
+
+
+
+<script type="text/javascript">
+// -----------------------맵차트 설정 시작-----------------------
+// rMate 맵차트 생성 준비가 완료된 상태 시 호출할 함수를 지정합니다.
+var mapVars = "rMateOnLoadCallFunction=mapReadyHandler";
+
+// 맵차트의 속성인 rMateOnLoadCallFunction 으로 설정된 함수.
+// rMate 맵차트 준비가 완료된 경우 이 함수가 호출됩니다.
+// 이 함수를 통해 맵차트에 레이아웃과 데이터를 삽입합니다.
+// 파라메터 : id - rMateMapChartH5.create() 사용 시 사용자가 지정한 id 입니다.
+// 맵차트 콜백함수 7개 존재합니다.
+// 1. setLayout - 스트링으로 작성된 레이아웃 XML을 삽입합니다.
+// 2. setData - 배열로 작성된 데이터를 삽입합니다.
+// 3. setMapDataBase - 스트링으로 작성된 MapData XML을 삽입합니다.
+// 4. setLayoutURLEx - 레이아웃 XML 경로를 지시합니다.
+// 5. setDataURLEx - 데이터 XML 경로를 지시합니다.
+// 6. setMapDataBaseURLEx - MapData XML 경로를 지시합니다.
+// 7. setSourceURLEx - Map Source 경로를 지시합니다.
+function mapReadyHandler(id) {
+	document.getElementById(id).setLayout(layoutStr);
+	document.getElementById(id).setData(mapData);
+	document.getElementById(id).setMapDataBaseURLEx(mapDataBaseURL);
+	document.getElementById(id).setSourceURLEx(sourceURL);
+}
+
+// Map Data 경로 정의
+// setMapDataBase함수로 mapDataBase를 문자열로 넣어줄 경우 주석처리나 삭제하십시오.
+var mapDataBaseURL = "./MapDataBaseXml/SouthKoreaDrillDown_opacity.xml";
+
+// MapChart Source 선택
+// MapSource 디렉토리의 지도 이미지중 택일가능하며, 이외에 사용자가 작성한 별도의 Svg이미지를 지정할 수 있습니다.(매뉴얼 참조)
+var sourceURL = "./MapSource/SouthKoreaDrillDown.svg";
+
+// rMateMapChart 를 생성합니다.
+// 파라메터 (순서대로) 
+//  1. 맵차트의 id ( 임의로 지정하십시오. ) 
+//  2. 맵차트가 위치할 div 의 id (즉, 차트의 부모 div 의 id 입니다.)
+//  3. 맵차트 생성 시 필요한 환경 변수들의 묶음인 chartVars
+//  4. 맵차트의 가로 사이즈 (생략 가능, 생략 시 100%)
+//  5. 맵차트의 세로 사이즈 (생략 가능, 생략 시 100%)
+rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%");
+
+
+
+var layoutStr = '\
+<?xml version="1.0" encoding="utf-8"?>\
+<rMateMapChart horizontalAlign="center" >\
+	<MapChart id="mainMap" drillDownEnabled="true" showDataTips="false" dataTipJsFunction="dataTipFunction" itemClickJsFunction="itemClickFunction">\
+		<series>\
+			<MapSeries id="mapseries" interactive="true">\
+				<localFill>\
+					<SolidColor color="#F9F9F9" />\
+				</localFill>\
+				<stroke>\
+					<Stroke color="#CAD7E0" weight="0.8" alpha="1"/>\
+				</stroke>\
+			</MapSeries>\
+<!--\n\
+showMaxValue	높은 값 아이템렌더러 표현\n\
+showMinValue	낮은 값 아이템렌더러 표현\n\
+showMinusValue	음수 값 아이템렌더러 표현\n\
+showFirstValue	첫번 째 아이템렌더러 표현\n\
+showLastValue	마지막 값 아이템렌더러 표현\n\
+horizontalAxisInvert	X축 반대로 출력하기\n\
+verticalAxisMaximum	Y축 최대 값 설정하기 (winloss, pie 무시)\n\
+verticalAxisMinimum	Y축 최소 값 설정하기 (winloss, pie 무시)\n\
+gutterLeft	왼쪽 여백(보류)엑셀없음\n\
+gutterRight	오른쪽 여백(보류)엑셀없음\n\
+gutterTop	위쪽 여백(보류)엑셀없음\n\
+gutterBottom	아래쪽 여백(보류)엑셀없음\n\
+click	마우스 클릭 콜백 함수(보류)엑셀없음\n\
+winLossValue	WinLoss Chart의 승패 기준값\n\
+showZeroAxis	0 값 축 표현\n\
+defaultColors	기본 색상\n\
+showAllValue	모든 아이템 렌더러 출력\n\
+itemRenderer	LineChart Cirlce 크기, 색상\n\
+radius	itemRenderer 크기\n\
+itemColor	itemRenderer 색상\n\
+columnWidthRatio	한 컬럼이 그려질 영역의 비율을 설정하기\n\
+columnWidthRatio	한 컬럼이 그려질 영역의 비율을 설정하기\n\
+winLossValue	승패 구분할 값\n\
+columnWidthRatio	한 컬럼이 그려질 영역의 비율을 설정하기\n\
+targetValue	목표 값 설정하기\n\
+targetValueRatio	타겟 차트에서의 width에 대한 대비값\n\
+targetValueWidth	타겟의 width 값\n\
+startAngle	파이 차트가 시작될 각도\n\
+showToolTip	툴팁의 표현 유무 설정\n\
+stroke	모든 값 테두리 선 설정하기\n\
+fill	모든 값 배경색 설정하기\n\
+maxValueStroke	높은 값 선 설정하기\n\
+maxValueFill	높은 값 색상 설정하기\n\
+minValueStroke	최소 값 테두리 선 설정하기\n\
+minValueFill	최소 값 채우기 설정하기\n\
+minusValueStroke	음수 값 테두리 선 설정하기\n\
+minusValueFill	음수 값 채우기 설정하기\n\
+firstValueStroke	처음 값 테두리 선 설정하기\n\
+firstValueFill	처음 값 색상 설정하기\n\
+lastValueStroke	마지막 값 테두리 선 설정하기\n\
+lastValueFill	마지막 값 채우기 설정하기\n\
+lineStroke	라인 선 색살 설정하기\n\
+lineWidth	차트 Stroke의 두께\n\
+zeroAxisStroke	0축 색상\n\
+zeroAxisStrokeWidth	0축 두께\n\
+targetValueColor	target value의 색상\n\
+targetValueStroke	target value의 stroke\n\
+-->\n\
+			<MapSparkSeries id="spark1" type="column" dataField="[2013,2014]" color="#333333"  labelPosition="inside"  columnWidthRatio="0.9" sparkWidth="20" sparkHeight="20" horizontalCenterGapField="h" verticalCenterGapField="v" radius="2" minusValueFill="#0000FF" fill="#FFAAFF" firstValueFill="#00B0BA" lastValueFill="#1966D8" showFirstValue="true"	showLastValue="true" fontSize="11">\
+				<showDataEffect>\
+					<SeriesZoom duration="1000" />\
+				</showDataEffect>\
+			</MapSparkSeries>\
+		</series>\
+	</MapChart>\
+	<Box horizontalScrollPolicy="off" verticalScrollPolicy="off">\
+		<SubLegend direction="horizontal" borderStyle="solid">\
+			<LegendItem label="2013">\
+				<fill>\
+					<SolidColor color="#00B0BA"/>\
+				</fill>\
+			</LegendItem>\
+			<LegendItem label="2014">\
+				<fill>\
+					<SolidColor color="#1966D8"/>\
+				</fill>\
+			</LegendItem>\
+		</SubLegend>\
+	</Box>\
+</rMateMapChart>';
+
+
+var mapData = [
+{ "code": 100, "sales":85, "profit":540, "2004":50, "2005":-40, "2006":-30, "2007":-10, "2008":-50, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":50, "2014":49 },
+{ "code": 101, "sales":85, "profit":540, "2004":50, "2005":-40, "2006":-30, "2007":-10, "2008":-50, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":50, "2014":49 },
+{ "code": 200, "sales":95.9, "profit":17.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":52, "2014":47, "v":10 },
+{ "code": 300, "sales":66.7, "profit":125.6, "2004":50, "2005":-40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":47, "2014":52 },
+{ "code": 400, "sales":75.9, "profit":43.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":56, "2014":43, "v":-20, "h":10 },
+{ "code": 500, "sales":31.1, "profit":155.9, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":61, "2014":37, "v":-10 },
+{ "code": 600, "sales":95.5, "profit":120.5, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":80, "2014":18 },
+{ "code": 700, "sales":54.8, "profit":98.3, "2004":50, "2005":40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":80, "2014":19, "h":10 },
+{ "code": 800, "sales":100.5, "profit":148.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":59, "2014":39 },
+{ "code": 900, "sales":135.8, "profit":40.0, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":7, "2014":89, "v":-20 },
+{ "code": 1000, "sales":119.3, "profit":133.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":13, "2014":86 },
+{ "code": 1100, "sales":39.5, "profit":34.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":56, "2014":42 },
+{ "code": 1200, "sales":1.3, "profit":145.5, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":49, "2014":50 },
+{ "code": 1300, "sales":23.5, "profit":113.2, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":51, "2014":47 },
+{ "code": 1400, "sales":11.7, "profit":213.2, "v":0, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":30, "2014":56 },
+{ "code": 1401, "sales":11.7, "profit":213.2, "v":0, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":30, "2014":56 },
+{ "code": 1500, "sales":11.9, "profit":71.7, "2004":50, "2005":40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":20, "2014":78, "h":-15, "v":0 },
+{ "code": 1600, "sales":55.4, "profit":62.6, "2004":50, "2005":40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":11, "2014":87, "h":5 },
+{ "code": 1700, "sales":8.0, "profit":6.5, "2004":5, "2005":40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":5, "2014":94, "h":-5, "v":-20 }
+];
+// -----------------------맵차트 설정 끝 -----------------------
+
+</script>
+<!-- 샘플 작동을 위한 css와 js -->
+<script type="text/javascript" src="./Web/JS/common.js"></script>
+<script type="text/javascript" src="./Web/JS/sample_util.js"></script>
+<link rel="stylesheet" type="text/css" href="./Web/sample.css"/>
+
+<!-- SyntaxHighlighter -->
+<script type="text/javascript" src="./Web/syntax/shCore.js"></script>
+<script type="text/javascript" src="./Web/syntax/shBrushJScript.js"></script>
+<link type="text/css" rel="stylesheet" href="./Web/syntax/shCoreDefault.css"/>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="header">
+			<div class="headerTitle">Spark Series Column Drilldown</div>
+		</div>
+		<div id="content">
+			<!-- 차트가 삽입될 DIV -->
+			<div id="mapHolder"></div>
+		</div>
+		<div class="description">
+		맵차트 위에 Spark Column시리즈를 생성할 수 있습니다.<br>
+		각각의 시리즈위에 마우스 툴팁이 표시 됩니다.<br>
+		아래의 Layout 탭의 주석처리된 부분에서 속성을 확인하실 수 있습니다.<br>
+		속성을 적용하신 후 우측의 업데이트 버튼을 누르시면 위의 맵차트에 적용됩니다.
+		</div>
+
+		<div id="updater">
+						<div id="updaterTab">
+				<ul id="updaterTabUl">
+					<li id="updaterTabUlSource" class="active_tab">Source</li>
+					<li id="updaterTabUlLayout" class="non_active_li">Layout</li>
+					<li id="updaterTabUlData" class="non_active_li">Data</li>
+					<li id="updaterTabUlBlank">
+						<div id="btn_update">수정적용</div>
+					</li>
+				</ul>
+			</div>
+			<div id="updaterTarea">
+				<pre id="updaterTareaSource" class="brush:js toolbar:false" name="updaterTareaSource"></pre>
+				<textarea id="updaterTareaLayout" class="updaterTextarea" spellcheck="false"></textarea>
+				<textarea id="updaterTareaData" class="updaterTextarea" spellcheck="false"></textarea>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

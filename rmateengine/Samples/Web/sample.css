@@ -1,0 +1,369 @@
+@font-face{
+	font-family:open-sans;
+	src:url(./fonts/OpenSans.woff);
+}
+
+@font-face{
+	font-family:open-sans;
+	src:url(./fonts/OpenSans-Semibold.woff);
+	font-weight:600;
+}
+
+@font-face{
+	font-family:open-sans;
+	src:url(./fonts/OpenSans-Bold.woff);
+	font-weight:700;
+}
+
+@font-face{
+	font-family:NanumSquareNeo;
+	src:url(./fonts/NanumSquareNeoTTF-bRg.woff);
+}
+
+@font-face{
+	font-family:NanumSquareNeo;
+	src:url(./fonts/NanumSquareNeoTTF-cBd.woff);
+	font-weight:700;
+}
+
+@font-face{
+	font-family:NanumSquareNeo;
+	src:url(./fonts/NanumSquareNeoTTF-dEb.woff);
+	font-weight:800;
+}
+
+html, body{
+	width:100%;
+	margin:0;
+	padding:0;
+	font-family:open-sans, NanumSquareNeo, Arial;
+}
+
+div, span, ul, li, pre{
+	padding:0;
+	margin:0;
+	list-style:none;
+	font-family:inherit;
+	box-sizing:border-box;
+}
+
+.wrapper{
+	display:flex;
+	flex-flow:column wrap;
+	
+	width:980px;
+	
+	gap:40px;
+	padding-top:20px;
+	
+	margin:auto;
+}
+
+.header{
+	width:100%;
+	height:42px;
+	position:relative;
+	
+	margin-bottom:20px;
+}
+
+.headerTitle{
+	color:#3B454E;
+	font-size:32px;
+	font-weight:700;/*bold*/
+}
+
+#content{
+	width:100%;
+	height:600px;
+	padding:50px 65px;
+	border-radius:15px;
+	outline:1px solid #E3E8ED;
+}
+
+#mapHolder, .mapHolder{
+	width:100%;
+	height:100%;
+}
+
+#updater{
+	width:100%;
+	height:634px;
+	
+	margin-bottom:50px;
+}
+
+#updaterTab{
+	width:100%;
+	height:40px;
+}
+
+#updaterTab ul{
+	width:100%;
+	height:100%;
+	
+	display:flex;
+	position:relative;
+	flex-flow:row wrap;
+	
+	z-index:1;
+}
+
+#updaterTab li{
+	width:120px;
+	height:40px;
+	
+	color:#5D6A76;
+	text-align:center;
+	font-size:12px;
+	font-weight:600;/*semiBold*/
+
+	cursor:pointer;
+	padding-top:12px;
+}
+
+#updaterTab li:nth-child(-n+3){
+	border:solid 1px #E3E8ED;
+	border-left:none;
+	
+	background-color:#F6F8FA;
+}
+
+#updaterTab li:first-child{
+	border-left:solid 1px #E3E8ED;
+	border-top-left-radius: 15px;
+}
+
+#updaterTab li:nth-child(3){
+	border-top-right-radius: 15px;
+}
+
+#updaterTab li.active_tab{
+	border-bottom:none;
+	background-color:#fff;
+}
+
+#updaterTab #updaterTabUlBlank{
+	display: flex;
+    justify-content: flex-end;
+	gap:10px;
+	
+	flex-grow:1;
+	cursor:default;
+	
+	padding:0;
+}
+
+#updaterTab #updaterTabUlBlank > div{
+	float:left;
+	padding-top:5px;
+	font-weight:400;/*regular*/
+}
+
+#updaterTab #updaterTabUlBlank > div#btn_update{
+	width: 79px;
+	height:30px;
+	
+	background-color:#F6F8FA;
+	border:1px solid #E3E8ED;
+	border-radius:5px;
+	
+	cursor:pointer;
+	
+	font-weight:700;/*bold*/
+}
+
+#updaterTarea{
+	width:100%;
+	height:594px;
+	
+	overflow:hidden;
+	position:relative;
+	
+	margin-top:-1px;
+	
+	border:solid 1px #E3E8ED;
+	border-top-right-radius:15px;
+	border-bottom-left-radius:15px;
+	border-bottom-right-radius:15px;
+	
+	cursor:pointer;
+}
+
+#updaterTareaSource{
+	width:100%;
+	height:100%;
+}
+
+#updaterTareaSource > div{
+	left:0;
+	top:0px;
+	
+	width:100% !important;
+	height:100%;
+	
+	margin:0 !important;
+}
+
+#updaterTareaSource > div > table{
+	cursor:text;
+}
+
+#updaterTareaSource > div > table::before{
+	content:"";
+	
+	display:block;
+	position:relative;
+	
+	width:100%;
+	height:28px;
+}
+
+#updater code,
+#updater textarea,
+#updaterTareaSource .syntaxhighlighter table td.gutter .line{
+	font-family:open-sans, NanumSquareNeo, Arial !important;
+	font-size:14px !important;
+	letter-spacing:-0.04em !important;
+}
+
+#updater textarea{
+	width:100%;
+	height:100%;
+	border:none;
+	outline:none;
+	position:relative;
+	padding:25px 0 0 25px;
+	box-sizing:border-box;
+	
+	max-width:980px;
+	max-height:594px;
+}
+
+#updaterTareaSource .syntaxhighlighter table td.gutter .line{
+	padding-left:40px !important;
+	border-right-color:#E3E8ED !important;
+}
+
+#updaterTareaSource .syntaxhighlighter table td.code .line,
+#updaterTareaSource .syntaxhighlighter table td.gutter .line{
+	height:19px !important;
+}
+
+.description{
+	font-size:15px;
+	padding:30px;
+	background-color:#FAFBFD;
+	line-height:1.5;
+	
+	color:#57616B;
+	border:1px solid #E3E8ED;
+	border-radius:15px;
+	
+	margin-top:-20px;
+}
+
+.description > ul{
+	padding:0 0 0 18px;
+}
+
+.description li{
+	list-style:circle;
+}
+
+.button{
+	height:35px;
+	float:left;
+	
+	color:#3B454E;
+	font-size:13px;
+	font-weight:600; /*semi-bold*/
+	text-align:center;
+	letter-spacing:-0.02em;
+	background-color:#F0F3F8;
+	
+	padding:6px 16px;
+	margin-right:8px;
+	
+	border:solid 1px #E3E8ED;
+	border-radius:6px;
+	
+	cursor:pointer;
+	transition:all 0.3s;
+}
+
+.button:hover{
+	background-color:#fff;
+	border-color:#6C7680;
+	filter:drop-shadow(2px 2px 3px rgba(0,0,0,.15));
+}
+
+#table_data{
+	margin-top:10px;
+	font-size:13px;
+	width:100%;
+	margin:0px auto;
+	text-align:center;
+	background-color:#f1f1f1;
+}
+
+#table_data th{
+	padding:6px 0 6px 0;
+	border-top: 1px solid #eee;
+    border-right: 1px solid #eee;
+}
+
+#table_data td{
+	padding:6px 0 6px 0;
+	background-color:#ffffff;
+}
+
+.sampleButtons{
+	margin-bottom:-20px;
+}
+
+::-webkit-scrollbar {
+	width:16px;
+	height:16px;
+	background-color: #FAFBFD;
+}
+
+::-webkit-scrollbar-thumb{
+	border:5px solid transparent;
+	border-radius:16px;
+	background-clip:padding-box;
+	background-color:rgba(232,235,239,.75);
+}
+
+::-webkit-scrollbar-thumb:hover{
+	background-color:rgba(232,235,239,1);
+}
+
+::-webkit-scrollbar-thumb:active{
+	background-color:#bdbdbd;
+}
+
+.description .string,
+#updater .string{color:#547BD8 !important;}
+
+.description .comments,
+#updater .comments{color:#4FAA8D !important;}
+
+.description .plain,
+#updater .plain{color:#5D6A76 !important;}
+
+.description .prop{color:#47C83E;}
+.description .class{color:#000; font-weight:700;/*bold*/}
+.description .reserveVar{color:#fd9357;}
+.description .var{color:#006699;font-weight:bold;}
+.description .warning{color:#ed3334;}
+.description .tuto{display:inline-block;margin-top:20px;color:#111;font-size:15px;font-family:open-sans-semibold,"malgun gothic";}
+
+.scaleLabel {
+	float:left;
+	font-size:14px;
+	letter-spacing: -1px;
+	color: #444444;
+	padding-top: 9px;
+	margin-right: 10px;
+}

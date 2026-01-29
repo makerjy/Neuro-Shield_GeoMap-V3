@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rMateMapChartH5 (RiaMore Soft)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<!-- rMateChartH5 라이센스 -->
+<script type="text/javascript" src="../LicenseKey/rMateMapChartH5License.js"></script>
+<!-- rMateMapChartH5 라이브러리 -->
+<script type="text/javascript" src="../rMateMapChartH5/JS/rMateMapChartH5.js"></script>
+<!-- rMateMapChartH5 CSS -->
+<link rel="stylesheet" type="text/css" href="../rMateMapChartH5/Assets/rMateMapChartH5.css"/>
+
+
+
+<script type="text/javascript">
+// -----------------------맵차트 설정 시작-----------------------
+// rMate 맵차트 생성 준비가 완료된 상태 시 호출할 함수를 지정합니다.
+var mapVars = "rMateOnLoadCallFunction=mapReadyHandler";
+
+// 맵차트의 속성인 rMateOnLoadCallFunction 으로 설정된 함수.
+// rMate 맵차트 준비가 완료된 경우 이 함수가 호출됩니다.
+// 이 함수를 통해 맵차트에 레이아웃과 데이터를 삽입합니다.
+// 파라메터 : id - rMateMapChartH5.create() 사용 시 사용자가 지정한 id 입니다.
+// 맵차트 콜백함수 7개 존재합니다.
+// 1. setLayout - 스트링으로 작성된 레이아웃 XML을 삽입합니다.
+// 2. setData - 배열로 작성된 데이터를 삽입합니다.
+// 3. setMapDataBase - 스트링으로 작성된 MapData XML을 삽입합니다.
+// 4. setLayoutURLEx - 레이아웃 XML 경로를 지시합니다.
+// 5. setDataURLEx - 데이터 XML 경로를 지시합니다.
+// 6. setMapDataBaseURLEx - MapData XML 경로를 지시합니다.
+// 7. setSourceURLEx - Map Source 경로를 지시합니다.
+function mapReadyHandler(id) {
+	document.getElementById(id).setLayout(layoutStr);
+	document.getElementById(id).setData(mapData);
+	document.getElementById(id).setMapDataBaseURLEx(mapDataBaseURL);
+	document.getElementById(id).setSourceURLEx(sourceURL);
+}
+
+// Map Data 경로 정의
+// setMapDataBase함수로 mapDataBase를 문자열로 넣어줄 경우 주석처리나 삭제하십시오.
+var mapDataBaseURL = "./MapDataBaseXml/SouthKoreaDrillDownMetroDong.xml";
+
+// MapChart Source 선택
+// MapSource 디렉토리의 지도 이미지중 택일가능하며, 이외에 사용자가 작성한 별도의 Svg이미지를 지정할 수 있습니다.(매뉴얼 참조)
+var sourceURL = "./MapSource/SouthKoreaDrillDownMetroDong.svg";
+
+// rMateMapChart 를 생성합니다.
+// 파라메터 (순서대로) 
+//  1. 맵차트의 id ( 임의로 지정하십시오. ) 
+//  2. 맵차트가 위치할 div 의 id (즉, 차트의 부모 div 의 id 입니다.)
+//  3. 맵차트 생성 시 필요한 환경 변수들의 묶음인 chartVars
+//  4. 맵차트의 가로 사이즈 (생략 가능, 생략 시 100%)
+//  5. 맵차트의 세로 사이즈 (생략 가능, 생략 시 100%)
+rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%");
+
+/*
+// ------------------------- 지역 데이타팁 사용자 정의 함수 -----------------------------------------------------
+// layout XML 에서 MapChart 속성을 넣을때 dataTipJsFunction을 주고, 만든 javascript 함수명을 넣어줍니다
+//   예) <MapChart dataTipJsFunction="dataTipFunction">
+//
+// 파라메터 설명
+//   seriesId : Series의 id
+//   code : 지역 코드 (mapDataBaseURL의 파일 참조)
+//   label : 지역명.
+//   data : 해당 지역코드로 dataURL을 통해 전달된 데이타
+//
+// 반환값
+//   해당 지역에 표시할 데이타팁 문자열
+*/
+
+function dataTipFunction(seriesId, code, label, data) {
+	if (seriesId == "image") {
+		return label + " --  날씨:" + data.weather;
+	} else
+		return label;
+}
+
+var sparkCode = [110100, 1513, 313];
+
+// 파라메터 설명
+//   seriesId : Series의 id
+//   code : 지역 코드 (mapDataBaseURL의 파일 참조)
+//   label : 지역명.
+//   data : 해당 지역코드로 dataURL을 통해 전달된 데이타
+//	  parentCode : 상위 맵 코드
+function codeFunction(seriesId, code, label, data, parentMapCode) {
+	if ( !parentMapCode && (seriesId == "panel" || seriesId == "spark1") )
+		return false;
+	else if ( parentMapCode )	{
+		if ( seriesId == "panel" && parentMapCode != 110100 )
+			return true;
+		if ( (seriesId == "spark1") && sparkCode.indexOf(parentMapCode) > -1 )
+			return true;
+		else
+			return false;
+	} else
+		return true;
+};
+
+var layoutStr = '\
+<?xml version="1.0" encoding="utf-8"?>\
+<rMateMapChart>\
+	<MapChart id="mainMap" drillDownEnabled="true" showDataTips="true" showDataTipTargets="false" dataTipJsFunction="dataTipFunction">\
+		<series>\
+			<MapSeries id="mapseries" interactive="true" enabledField="enable" disabledFill="#ebf0f4">\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000"/>\
+				</showDataEffect>\
+				<localFill>\
+					<SolidColor color="#c1cfda"/>\
+				</localFill>\
+				<stroke>\
+					<Stroke color="#CAD7E0" weight="0.8" alpha="1"/>\
+				</stroke>\
+			</MapSeries>\
+			<MapImageSeries id="image" labelField="label" imageUrlField="imgurl" horizontalCenterGapField="h" verticalCenterGapField="v" color="#888888" labelPosition="bottom" displayName="날씨" imageWidth="30" imageHeight="30" codeJsFunction="codeFunction">\
+				<showDataEffect>\
+					<SeriesSlide duration="1000"/>\
+				</showDataEffect>\
+			</MapImageSeries>\
+			<MapPanelSeries id="panel" titleField="label" bodyTextField="temperature" horizontalCenterGapField="h" verticalCenterGapField="v" bodyColor="#555555" color="#FFFFFF" horizontalAlign="right" displayName="날씨" itemRenderer="VPanelItemRenderer" fill="#0B91FF" selectedCircle="true" codeJsFunction="codeFunction" showPanelField="showPanel">\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000"/>\
+				</showDataEffect>\
+			</MapPanelSeries>\
+			<MapSparkSeries id="spark1" type="column" dataField="[2015,2016,2017]" color="#666666"  labelPosition="inside" displayName="지점" columnWidthRatio="0.8" sparkWidth="60" sparkHeight="80" horizontalCenterGapField="h" verticalCenterGapField="v" radius="2" minusValueFill="#0000FF" fill="#93e5d9" firstValueFill="#5587a2" lastValueFill="#ffa746" showFirstValue="true"	showLastValue="true" fontSize="12" showDataTips="true" showZeroAxis="true" defaultColors="[#ff0000,#93e5d9,#93e5d9]" sparkDataTipBorder="#6593ad" labelField="label" codeJsFunction="codeFunction">\
+				<showDataEffect>\
+					<SeriesZoom duration="1000" />\
+				</showDataEffect>\
+			</MapSparkSeries>\
+		</series>\
+	</MapChart>\
+</rMateMapChart>\
+';
+
+var mapData = [
+{ "code":100, "id":"w01", "label":"영동", "temperature":10, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":15, "h":25 , "2015":100, "2016":70, "2017":50},
+{ "code":200, "enable":false},
+{ "code":1600, "enable":false},
+{ "code":1700, "enable":false},
+{ "code":70000, "enable":false},
+{ "code":50000, "enable":false},
+{ "code":60000, "enable":false},
+{ "code":80000, "enable":false},
+{ "code":100000, "enable":false},
+{ "code":110000, "id":"w03", "label":"인천", "temperature":12, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":-15, "h":-30 , "2015":100, "2016":70, "2017":50, "enable":true},
+{ "code":110100, "id":"w04", "label":"강화군", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":100, "2016":70, "2017":50, "enable":true, "showPanel":true},
+{ "code":110101, "id":"w05", "label":"강화읍", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":50, "2017":50, "enable":false, "showPanel":true, "v":-10, "h":30},
+{ "code":110102, "id":"w06", "label":"선원면", "temperature":6, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":70, "2016":70, "2017":20, "enable":false, "showPanel":true, "v":-10, "h":20},
+{ "code":110103, "id":"w07", "label":"불읍면", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":10, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":110104, "id":"w08", "label":"길상면", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":30, "2017":30, "enable":false, "showPanel":true},
+{ "code":110105, "id":"w09", "label":"화도면", "temperature":6, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":70, "2016":80, "2017":30, "enable":false, "showPanel":true},
+{ "code":110106, "id":"w09", "label":"양도면", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":40, "2017":50, "enable":false, "showPanel":true},
+{ "code":110107, "id":"w10", "label":"내가면", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":130, "2016":40, "2017":50, "enable":false, "showPanel":true},
+{ "code":110108, "id":"w11", "label":"하점면", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":50, "2017":60, "enable":false, "showPanel":true},
+{ "code":110109, "id":"w12", "label":"양사면", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":70, "2017":10, "enable":false, "showPanel":true, "v": -25},
+{ "code":110110, "id":"w13", "label":"송해면", "temperature":6, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":100, "2016":34, "2017":40, "enable":false, "showPanel":true},
+{ "code":110111, "id":"w14", "label":"교동면", "temperature":5, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":110, "2016":50, "2017":70, "enable":false, "showPanel":true},
+{ "code":110112, "id":"w15", "label":"삼사면", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":40, "2016":70, "2017":30, "enable":false, "showPanel":true},
+{ "code":110113, "id":"w16", "label":"서도면", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":80, "2017":30, "enable":false, "showPanel":true},
+{ "code":110200, "id":"w18", "label":"계양구", "temperature":5, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":80, "2016":10, "2017":70, "enable":false, "showPanel":true, "v":-10},
+{ "code":110300, "id":"w19", "label":"남구", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":100, "2016":30, "2017":50, "enable":false, "showPanel":true, "v":35},
+{ "code":110400, "id":"w20", "label":"남동구", "temperature":4, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":110, "2016":70, "2017":50, "enable":false, "showPanel":true, "v":30, "h":10},
+{ "code":110500, "id":"w21", "label":"동구", "temperature":5, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":70, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":110600, "id":"w22", "label":"부평구", "temperature":6, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true, "v":5},
+{ "code":110700, "id":"w23", "label":"서구", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":40, "2016":70, "2017":50, "enable":false, "showPanel":true, "v":-10},
+{ "code":110800, "id":"w24", "label":"연수구", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":130, "2016":70, "2017":50, "enable":false, "showPanel":true, "v":55},
+{ "code":110900, "id":"w25", "label":"옹진구", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":70, "2017":50, "enable":false, "showPanel":true, "v":20},
+{ "code":111000, "id":"w26", "label":"중구", "temperature":10, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":10, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":300, "id":"w27", "label":"경남", "temperature":13, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "h":20 , "2015":110, "2016":70, "2017":50, "enable":true},
+{ "code":1501, "id":"w28", "label":"계룡시", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":20, "2016":50, "2017":50, "enable":false, "showPanel":true},
+{ "code":1502, "id":"w29", "label":"공주시", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":70, "2017":20, "enable":false, "showPanel":true},
+{ "code":1503, "id":"w30", "label":"금산군", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":30, "2016":30, "2017":50, "enable":false, "showPanel":true},
+{ "code":1504, "id":"w31", "label":"논산시", "temperature":4, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":40, "enable":false, "showPanel":true},
+{ "code":1505, "id":"w32", "label":"당진시", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":60, "2017":50, "enable":false, "showPanel":true},
+{ "code":1506, "id":"w33", "label":"보령시", "temperature":6, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":40, "2016":70, "2017":10, "enable":false, "showPanel":true},
+{ "code":1507, "id":"w34", "label":"부여군", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":10, "2017":50, "enable":false, "showPanel":true},
+{ "code":1508, "id":"w35", "label":"서산시", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":60, "enable":false, "showPanel":true},
+{ "code":1509, "id":"w36", "label":"서천군", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":30, "2017":70, "enable":false, "showPanel":true},
+{ "code":1510, "id":"w37", "label":"아산시", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":70, "2016":70, "2017":80, "enable":false, "showPanel":true},
+{ "code":1512, "id":"w39", "label":"예산군", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":30, "2016":40, "2017":60, "enable":false, "showPanel":true},
+{ "code":1513, "id":"w40", "label":"천안시", "temperature":6, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":40, "2016":70, "2017":50, "enable":true, "showPanel":true},
+{ "code":1514, "id":"w41", "label":"청양균", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":70, "2016":70, "2017":40, "enable":false, "showPanel":true},
+{ "code":1515, "id":"w42", "label":"태안군", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":30, "2016":60, "2017":50, "enable":false, "showPanel":true},
+{ "code":1516, "id":"w43", "label":"홍성군", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":60, "2016":70, "2017":10, "enable":false, "showPanel":true},
+{ "code":15131, "id":"w44", "label":"동남구", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":40, "2016":70, "2017":90, "enable":false},
+{ "code":15132, "id":"w45", "label":"서북구", "temperature":12, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":20, "2016":70, "2017":50, "enable":false},
+{ "code":301, "id":"w46", "label":"거제시", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":302, "id":"w47", "label":"거창시", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":303, "id":"w48", "label":"고성시", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":304, "id":"w49", "label":"김해시", "temperature":5, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":305, "id":"w50", "label":"남해시", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":306, "id":"w51", "label":"밀양시", "temperature":5, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":307, "id":"w52", "label":"사천시", "temperature":6, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":308, "id":"w53", "label":"산청시", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":309, "id":"w54", "label":"양산시", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":310, "id":"w55", "label":"의령시", "temperature":5, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":311, "id":"w56", "label":"진주시", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":312, "id":"w57", "label":"창년시", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":313, "id":"w58", "label":"창원시", "temperature":6, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":true, "showPanel":true},
+{ "code":314, "id":"w59", "label":"통영시", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":315, "id":"w60", "label":"하동군", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":316, "id":"w61", "label":"함안군", "temperature":5, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":317, "id":"w62", "label":"함양군", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":318, "id":"w63", "label":"합천군", "temperature":6, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false, "showPanel":true},
+{ "code":3131, "id":"w64", "label":"의창구", "temperature":8, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50, "enable":false},
+{ "code":3132, "id":"w65", "label":"마산회원구", "temperature":12, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":40, "2016":70, "2017":50, "enable":false},
+{ "code":3133, "id":"w66", "label":"성산구", "temperature":12, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":80, "2016":60, "2017":10, "enable":false},
+{ "code":3134, "id":"w67", "label":"마산합포구", "temperature":12, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":10, "2016":30, "2017":50, "enable":false},
+{ "code":3135, "id":"w68", "label":"진해구", "temperature":12, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":30, "2016":80, "2017":40, "enable":false},
+{ "code":400, "id":"w69", "label":"울릉/독도", "temperature":8, "weather":"구름많음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/cloud.png", "v":-110, "h":80 , "2015":10, "2016":70, "2017":50},
+{ "code":400, "id":"w70", "label":"경북", "temperature":13, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":15 , "2015":110, "2016":70, "2017":50},
+{ "code":90000, "id":"w71", "label":"서울/경기", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":50, "2016":70, "2017":50},
+{ "code":1200, "id":"w72", "label":"전남", "temperature":10, "weather":"비", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/rain.png" , "2015":110, "2016":70, "2017":50},
+{ "code":1300, "id":"w73", "label":"전북", "temperature":8, "weather":"구름많음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/cloud.png" , "2015":20, "2016":70, "2017":50},
+{ "code":1400, "id":"w74", "label":"제주", "temperature":15, "weather":"비", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/rain.png" , "2015":60, "2016":70, "2017":50},
+{ "code":1500, "id":"w75", "label":"충남", "temperature":10, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" , "2015":70, "2016":70, "2017":50, "enable":true}
+];
+// -----------------------맵차트 설정 끝 -----------------------
+
+</script>
+<!-- 샘플 작동을 위한 css와 js -->
+<script type="text/javascript" src="./Web/JS/common.js"></script>
+<script type="text/javascript" src="./Web/JS/sample_util.js"></script>
+<link rel="stylesheet" type="text/css" href="./Web/sample.css"/>
+
+<!-- SyntaxHighlighter -->
+<script type="text/javascript" src="./Web/syntax/shCore.js"></script>
+<script type="text/javascript" src="./Web/syntax/shBrushJScript.js"></script>
+<link type="text/css" rel="stylesheet" href="./Web/syntax/shCoreDefault.css"/>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="header">
+			<div class="headerTitle">뎁스별 다른 시리즈</div>
+		</div>
+		<div id="content">
+			<!-- 차트가 삽입될 DIV -->
+			<div id="mapHolder"></div>
+		</div>
+		<div class="description">
+		드릴다운 시 codeJsFunction를 설정하여 뎁스에 따라 다른 시리즈를 설정할 수 있습니다.<br>
+		상위 맵 코드 값을 참고하여 true로 반환 시 해당 시리즈를 출력합니다.<br>
+		뎁스에 따라서 각각 다른 시리즈로 출력하는 것을 확인하실 수 있습니다.<br>
+		충청남도 - 천안시, 경상남도 - 창원시, 인천시 - 강화도 각 색상이 다른 지역에 적용되어 있습니다.<br>
+		출력될 시리즈는 레이아웃에 포함되어야합니다.<br>
+		아래 Source, Layout 탭을 참고하시기 바랍니다.
+		</div>
+
+		<div id="updater">
+						<div id="updaterTab">
+				<ul id="updaterTabUl">
+					<li id="updaterTabUlSource" class="active_tab">Source</li>
+					<li id="updaterTabUlLayout" class="non_active_li">Layout</li>
+					<li id="updaterTabUlData" class="non_active_li">Data</li>
+					<li id="updaterTabUlBlank">
+						<div id="btn_update">수정적용</div>
+					</li>
+				</ul>
+			</div>
+			<div id="updaterTarea">
+				<pre id="updaterTareaSource" class="brush:js toolbar:false" name="updaterTareaSource"></pre>
+				<textarea id="updaterTareaLayout" class="updaterTextarea" spellcheck="false"></textarea>
+				<textarea id="updaterTareaData" class="updaterTextarea" spellcheck="false"></textarea>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

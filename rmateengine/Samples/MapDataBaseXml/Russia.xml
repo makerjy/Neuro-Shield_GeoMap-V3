@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="Дальневосточный" symbol="Дальневосточный"/>
+	<State code="200" label="Сибирский" symbol="Сибирский"/>
+	<State code="300" label="Уральский" symbol="Уральский"/>
+	<State code="400" label="СевероЗападный" symbol="СевероЗападный"/>
+	<State code="500" label="Приволжский" symbol="Приволжский"/>
+	<State code="600" label="Центральный" symbol="Центральный"/>
+	<State code="700" label="Южный" symbol="Южный"/>
+	<State code="800" label="СевероКавказский" symbol="СевероКавказский"/>
+</Map>

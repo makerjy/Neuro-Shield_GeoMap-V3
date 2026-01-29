@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="الباحة" symbol="الباحة"/>
+	<State code="200" label="منطقةالحدودالشمالية" symbol="منطقةالحدودالشمالية"/>
+	<State code="300" label="الجوف" symbol="الجوف"/>
+	<State code="400" label="المدينة" symbol="المدينة"/>
+	<State code="500" label="القصيم" symbol="القصيم"/>
+	<State code="600" label="الرياض" symbol="الرياض"/>
+	<State code="700" label="الشرقية" symbol="الشرقية"/>
+	<State code="800" label="عسير‎" symbol="عسير"/>
+	<State code="900" label="حائل" symbol="حائل"/>
+	<State code="1000" label="جيزان‎" symbol="جيزان"/>
+	<State code="1100" label="منطقةمكة" symbol="منطقةمكة"/>
+	<State code="1200" label="نجران" symbol="نجران"/>
+	<State code="1300" label="تبوك" symbol="تبوك"/>
+</Map>

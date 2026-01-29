@@ -1,0 +1,44 @@
+﻿[
+{ "code": 105, "enabled":false },
+{ "code": 117, "enabled":false },
+
+{ "code": 206, "enabled":false },
+{ "code": 211, "enabled":false },
+{ "code": 222, "enabled":false },
+{ "code": 223, "enabled":false },
+
+{ "code": 300, "enabled":false },
+
+{ "code": 405, "enabled":false },
+{ "code": 409, "enabled":false },
+
+{ "code": 501, "enabled":false },
+
+{ "code": 602, "enabled":false },
+
+{ "code": 705, "enabled":false },
+
+{ "code": 806, "enabled":false },
+{ "code": 816, "enabled":false },
+
+{ "code": 905, "enabled":false },
+
+{ "code": 1002, "enabled":false },
+
+{ "code": 1106, "enabled":false },
+{ "code": 1107, "enabled":false },
+
+{ "code": 1203, "enabled":false },
+{ "code": 1215, "enabled":false },
+{ "code": 1216, "enabled":false },
+
+{ "code": 1305, "enabled":false },
+{ "code": 1313, "enabled":false },
+{ "code": 1314, "enabled":false },
+
+{ "code": 1401, "enabled":false },
+
+{ "code": 1500, "enabled":false },
+
+{ "code": 1602, "enabled":false }
+]

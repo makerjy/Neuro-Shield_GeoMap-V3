@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rMateMapChart>
+	<MapChart id="mainMap" drillDownEnabled="true" showDataTips="true" dataTipJsFunction="dataTipFunction" itemClickJsFunction="itemClickFunction" dataTipType="Type1" dataTipFill="#2dc4b3">
+		<series>
+			<MapSeries id="mapseries" interactive="false">
+				<localFill>
+					<SolidColor color="#ebf0f4"/>
+				</localFill>
+				<showDataEffect>
+					<SeriesZoom duration="1000"/>
+				</showDataEffect>
+				<stroke>
+					<Stroke color="#CAD7E0" weight="0.8" alpha="1"/>
+				</stroke>
+			</MapSeries>
+<!--
+adjustedRadius 사용자가 선택하거나 롤오버시 지점 마크의 크기 증가 픽셀수 (기본 2)
+alpha 투명도 (기본 1)
+areaCodeField dataProvider에서 지역 코드를 나타내는 필드명 (기본 code)
+fill 표시할 색상
+fillJsFunction 자바스크립트를 이용한 표시마크의 색상 변경기능 (자바스크립트에서 선언한 함수명을 넣어줍니다)
+filters 시리즈에 적용할 필터
+hideDataEffect 지점이 사라질때 적용할 이펙트
+horizontalCenterGapField 지점 수평 이동좌표를 지정하는 data provider의 필드명
+interactive 사용자 마우스 조작에 반응할지 여부 (true,false중 택일, 기본 true)
+itemRenderer 값을 나타내는 그리는 객체 (CircleItemRenderer, BallItemRenderer이 있습니다)
+labelFilters 라벨에 적용할 필터
+labelField 라벨을 지정하는 data provider의 필드명
+labelJsFunction 자바스크립트를 이용한 라벨 변경기능 (자바스크립트에서 선언한 함수명을 넣어줍니다)
+labelPosition 라벨의 위치를 설정  (none, inside중 택일, 기본 none)
+maxRadius 가장 큰 값일때의 최대 반경 픽셀수 (기본 40)
+minRadius 가장 작은 값일때의 최소 반경 픽셀수 (기본 0)
+radiusField dataProvider에서 지역별 값을 나타내는 필드명
+showDataEffect 지점이 표시될때 적용할 이펙트
+stroke 표시할 경계 라인 색상
+useHandCursor 시리즈에 마우스가 올 경우 커서를 손모양으로 바꿀지 여부 (true,false중 택일, 기본 false)
+useRevisedCenter mapDataBased에 설정된 중심 이동 값의 적용여부 (true,false중 택일, 기본 true)
+verticalCenterGapField 지점 수직 이동좌표를 지정하는 data provider의 필드명
+-->
+			<MapBubbleSeries id="bubble" radiusField="sales" minRadius="5" color="#888888" labelPosition="inside" displayName="지점">
+				<fill>
+					<SolidColor color="#95e0db" alpha="0.5"/>
+				</fill>
+				<showDataEffect>
+					<SeriesSlide duration="1000"/>
+				</showDataEffect>
+				<stroke>
+					<Stroke color="#0000dd" weight="0.5"/>
+				</stroke>
+			</MapBubbleSeries>
+		</series>
+	</MapChart>
+</rMateMapChart>

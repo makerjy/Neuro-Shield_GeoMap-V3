@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rMateMapChartH5 (RiaMore Soft)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<link rel="stylesheet" type="text/css" href="./rMateMapChartH5Sample.css"/>
+<style>
+#chartdiv {
+	width	: 100%;
+	height	: 500px;
+}
+
+.twitterbird {
+ margin-bottom: 10px;
+ width: 50px;
+ height:50px;
+ display:block;
+/* background:transparent url('../rMateMapChartH5/Assets/a/sun.gif') center top no-repeat; */
+}
+
+.twitterbird:hover {
+/*   background-image: url('../rMateMapChartH5/Assets/a/2.gif');*/
+}
+</style>
+
+<!-- rMateChartH5 라이센스 -->
+<script language="javascript" type="text/javascript" src="http://demo.riamore.net/HTML5demo/chart/LicenseKey/rMateChartH5License.js"></script>
+<!-- 실제적인 rMateChartH5 라이브러리 -->
+<script language="javascript" type="text/javascript" src="http://demo.riamore.net/HTML5demo/chart/rMateChartH5/JS/rMateChartH5.js"></script>
+
+<!-- rMateChartH5 라이센스 -->
+<script type="text/javascript" src="../LicenseKey/rMateMapChartH5License.js"></script>
+<!-- rMateMapChartH5 라이브러리 -->
+<script type="text/javascript" src="../rMateMapChartH5/JS/rMateMapChartH5.js"></script>
+<!-- rMateMapChartH5 CSS -->
+<link rel="stylesheet" type="text/css" href="../rMateMapChartH5/Assets/rMateMapChartH5.css"/>
+<!-- rMateChartH5 CSS -->
+<link rel="stylesheet" type="text/css" href="http://demo.riamore.net/HTML5demo/chart/rMateChartH5/Assets/Css/rMateChartH5.css"/>
+
+
+
+
+<script type="text/javascript">
+// chart 설정시작
+var chartVars1 = "rMateOnLoadCallFunction=chartReadyHandler1",
+	chartVars2 = "rMateOnLoadCallFunction=chartReadyHandler2",
+	chartVars3 = "rMateOnLoadCallFunction=chartReadyHandler3",
+	chartVars4 = "rMateOnLoadCallFunction=chartReadyHandler4",
+	chartVars5 = "rMateOnLoadCallFunction=chartReadyHandler5",
+	chartVars6 = "rMateOnLoadCallFunction=chartReadyHandler6",
+	chartVars7 = "rMateOnLoadCallFunction=chartReadyHandler7";
+
+var layoutStr1;
+
+function setLayout(nation) {
+	layoutStr1 =	'<rMateChart backgroundColor="0xFFFFFF" borderStyle="none" cornerRadius="5" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0" backgroundAlpha="0">'
+						+'<Options>'
+							+'<Caption fontSize="10" text="2015 '+nation+'"/>'
+						+'</Options>'
+						+'<Pie2DChart showDataTips="true"  paddingLeft="0" paddingRight="0" paddingTop="-30" paddingBottom="0">'
+							+'<series>'
+								+'<Pie2DSeries nameField="Month" field="Profit" labelPosition="inside" color="#888888" startAngle="90">'
+									+'<showDataEffect>'
+										+'<SeriesInterpolate duration="1000"/>'
+									+'</showDataEffect>'
+								+'</Pie2DSeries>'
+							+'</series>'
+						+'</Pie2DChart>'
+					+'</rMateChart>';
+
+	return layoutStr1;
+};
+
+// rMateChart 를 생성합니다.
+// 파라메터 (순서대로) 
+//  1. 차트의 id ( 임의로 지정하십시오. ) 
+//  2. 차트가 위치할 div 의 id (즉, 차트의 부모 div 의 id 입니다.)
+//  3. 차트 생성 시 필요한 환경 변수들의 묶음인 chartVars
+//  4. 차트의 가로 사이즈 (생략 가능, 생략 시 100%)
+//  5. 차트의 세로 사이즈 (생략 가능, 생략 시 100%)
+
+// 차트의 속성인 rMateOnLoadCallFunction 으로 설정된 함수.
+// rMate 차트 준비가 완료된 경우 이 함수가 호출됩니다.
+// 이 함수를 통해 차트에 레이아웃과 데이터를 삽입합니다.
+// 파라메터 : id - rMateChartH5.create() 사용 시 사용자가 지정한 id 입니다.
+function chartReadyHandler1(id) {
+	document.getElementById(id).setLayout(setLayout("North America"));
+	document.getElementById(id).setData(chartData1);
+}
+function chartReadyHandler2(id) {
+	document.getElementById(id).setLayout(setLayout("Central America"));
+	document.getElementById(id).setData(chartData2);
+}
+function chartReadyHandler3(id) {
+	document.getElementById(id).setLayout(setLayout("South America"));
+	document.getElementById(id).setData(chartData3);
+}
+function chartReadyHandler4(id) {
+	document.getElementById(id).setLayout(setLayout("Europe"));
+	document.getElementById(id).setData(chartData4);
+}
+function chartReadyHandler5(id) {
+	document.getElementById(id).setLayout(setLayout("Africa"));
+	document.getElementById(id).setData(chartData5);
+}
+function chartReadyHandler6(id) {
+	document.getElementById(id).setLayout(setLayout("Asia"));
+	document.getElementById(id).setData(chartData6);
+}
+function chartReadyHandler7(id) {
+	document.getElementById(id).setLayout(setLayout("Oceania"));
+	document.getElementById(id).setData(chartData7);
+}
+
+// 차트 데이터
+var chartData1 = [{"Month":"Jan", "Profit":2400},{"Month":"Feb", "Profit":700},{"Month":"Mar", "Profit":300},{"Month":"Apr", "Profit":1200},{"Month":"May", "Profit":100}],
+	chartData2 = [{"Month":"Jan", "Profit":240},{"Month":"Feb", "Profit":700},{"Month":"Mar", "Profit":300},{"Month":"Apr", "Profit":1200},{"Month":"May", "Profit":1200}],
+	chartData3 = [{"Month":"Jan", "Profit":400},{"Month":"Feb", "Profit":700},{"Month":"Mar", "Profit":300},{"Month":"Apr", "Profit":1200},{"Month":"May", "Profit":1700}],
+	chartData4 = [{"Month":"Jan", "Profit":200},{"Month":"Feb", "Profit":70},{"Month":"Mar", "Profit":300},{"Month":"Apr", "Profit":1200},{"Month":"May", "Profit":1700}],
+	chartData5 = [{"Month":"Jan", "Profit":200},{"Month":"Feb", "Profit":700},{"Month":"Mar", "Profit":300},{"Month":"Apr", "Profit":1200},{"Month":"May", "Profit":100}],
+	chartData6 = [{"Month":"Jan", "Profit":400},{"Month":"Feb", "Profit":700},{"Month":"Mar", "Profit":300},{"Month":"Apr", "Profit":1200},{"Month":"May", "Profit":700}],
+	chartData7 = [{"Month":"Jan", "Profit":400},{"Month":"Feb", "Profit":700},{"Month":"Mar", "Profit":30},{"Month":"Apr", "Profit":1200},{"Month":"May", "Profit":1700}];
+
+//
+
+
+
+// rMate 맵차트 생성 준비가 완료된 상태 시 호출할 함수를 지정합니다.
+var mapVars = "rMateOnLoadCallFunction=mapReadyHandler";
+
+// 맵차트의 속성인 rMateOnLoadCallFunction 으로 설정된 함수.
+// rMate 맵차트 준비가 완료된 경우 이 함수가 호출됩니다.
+// 이 함수를 통해 맵차트에 레이아웃과 데이터를 삽입합니다.
+// 파라메터 : id - rMateMapChartH5.create() 사용 시 사용자가 지정한 id 입니다.
+// 맵차트 콜백함수 7개 존재합니다.
+// 1. setLayout - 스트링으로 작성된 레이아웃 XML을 삽입합니다.
+// 2. setData - 배열로 작성된 데이터를 삽입합니다.
+// 3. setMapDataBase - 스트링으로 작성된 MapData XML을 삽입합니다.
+// 4. setLayoutURLEx - 레이아웃 XML 경로를 지시합니다.
+// 5. setDataURLEx - 데이터 XML 경로를 지시합니다.
+// 6. setMapDataBaseURLEx - MapData XML 경로를 지시합니다.
+// 7. setSourceURLEx - Map Source 경로를 지시합니다.
+function mapReadyHandler(id) {
+	document.getElementById(id).setLayout(layoutStr);
+	document.getElementById(id).setData(mapData);
+	document.getElementById(id).setMapDataBaseURLEx(mapDataBaseURL);
+	document.getElementById(id).setSourceURLEx(sourceURL);
+
+	mapApp = document.getElementById(id);
+	mapRoot = mapApp.getRoot();
+
+	var dataCompleteHandler = function(event) {
+		rMateChartH5.create("chart1", "north-americaMdivItem", chartVars1, "100%", "100%"); 
+		rMateChartH5.create("chart2", "central-americaMdivItem", chartVars2, "100%", "100%"); 
+		rMateChartH5.create("chart3", "south-americaMdivItem", chartVars3, "100%", "100%"); 
+		rMateChartH5.create("chart4", "europeMdivItem", chartVars4, "100%", "100%"); 
+		rMateChartH5.create("chart5", "africaMdivItem", chartVars5, "100%", "100%"); 
+		rMateChartH5.create("chart6", "asiaMdivItem", chartVars6, "100%", "100%"); 
+		rMateChartH5.create("chart7", "oceaniaMdivItem", chartVars7, "100%", "100%"); 
+	}
+
+	mapRoot.addEventListener("updateComplete", dataCompleteHandler);
+}
+
+var mapApp, mapRoot;
+
+// Map Data 경로 정의
+// setMapDataBase함수로 mapDataBase를 문자열로 넣어줄 경우 주석처리나 삭제하십시오.
+var mapDataBaseURL = "./MapDataBaseXml/WorldContinental.xml";
+
+// MapChart Source 선택
+// MapSource 디렉토리의 지도 이미지중 택일가능하며, 이외에 사용자가 작성한 별도의 Svg이미지를 지정할 수 있습니다.(매뉴얼 참조)
+var sourceURL = "./MapSource/WorldContinental.svg";
+
+// rMateMapChart 를 생성합니다.
+// 파라메터 (순서대로) 
+//  1. 맵차트의 id ( 임의로 지정하십시오. ) 
+//  2. 맵차트가 위치할 div 의 id (즉, 차트의 부모 div 의 id 입니다.)
+//  3. 맵차트 생성 시 필요한 환경 변수들의 묶음인 chartVars
+//  4. 맵차트의 가로 사이즈 (생략 가능, 생략 시 100%)
+//  5. 맵차트의 세로 사이즈 (생략 가능, 생략 시 100%)
+rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%");
+
+/*
+// ------------------------- 지역 Div 사용자 정의 함수 -----------------------------------------------------
+// layout XML 에서 MapSeries 속성을 넣을때 localFillJsFunction를 주고, 만든 javascript 함수명을 넣어줍니다
+//   예) <MapSeries localFillJsFunction="colorFunction">
+//
+// 파라메터 설명
+//   code : 지역 코드 (mapDataBaseURL의 파일 참조)
+//   label : 지역명.
+//   data : 해당 지역코드로 dataURL을 통해 전달된 데이타
+//
+// 반환값
+//   해당 지역에 표시할 색상
+*/
+function customSeries(id, code, label, data) {
+    // create holder
+    var holder = document.createElement('div');
+    holder.className = 'map-marker';
+    holder.style.position = 'absolute';
+    
+    return holder;
+}
+
+//----------------------- 맵차트 설정 끝 -----------------------
+
+var layoutStr = '\
+<?xml version="1.0" encoding="utf-8"?>\
+<rMateMapChart>\
+	<MapChart id="mainMap" drillDownEnabled="true" showDataTips="false" dataTipJsFunction="dataTipFunction" itemClickJsFunction="itemClickFunction">\
+		<series>\
+			<MapSeries id="mapseries" interactive="true">\
+				<localFill>\
+					<SolidColor color="#e9e9e9" />\
+				</localFill>\
+				<stroke>\
+					<Stroke color="#ffffff" weight="1" alpha="1"/>\
+				</stroke>\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000" />\
+				</showDataEffect>\
+			</MapSeries>\
+<!--\n\
+	id	DivSeries의 ID\n\
+	mdivWidth	divSeries의 width\n\
+	mdivHeight divSeries의 height\n\
+	customSeriesFunction divSeries에 입력할 HTML 객체에 대한 사용자 정의 함수\n\
+	horizontalCenterGapField 중심좌표에서 가로방향으로 이동할 위치 값의 필드\n\
+	verticalCenterGapField 중심좌표에서 세로방향으로 이동할 위치 값의 필드\n\
+-->\n\
+			<MapDivSeries id="div1" displayName="날씨" mdivWidth="95" mdivHeight="85" customSeriesFunction="customSeries" horizontalCenterGapField="h" verticalCenterGapField="v">\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000" />\
+				</showDataEffect>\
+			</MapDivSeries>\
+		</series>\
+	</MapChart>\
+</rMateMapChart>';
+
+
+var mapData = [
+{ "code": 100, "sales":85, "profit":540, "2004":50, "2005":-40, "2006":-30, "2007":-10, "2008":-50, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":50, "2014":49 },
+{ "code": 101, "sales":85, "profit":540, "2004":50, "2005":-40, "2006":-30, "2007":-10, "2008":-50, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":50, "2014":49 },
+{ "code": 102, "sales":85, "profit":540, "2004":50, "2005":-40, "2006":-30, "2007":-10, "2008":-50, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":50, "2014":49 },
+{ "code": 200, "sales":95.9, "profit":17.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":52, "2014":47, "v":10 },
+{ "code": 300, "sales":66.7, "profit":125.6, "2004":50, "2005":-40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":47, "2014":52 },
+{ "code": 400, "sales":75.9, "profit":43.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":56, "2014":43, "v":-20, "h":10 },
+{ "code": 500, "sales":31.1, "profit":155.9, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":61, "2014":37, "v":-10 },
+{ "code": 600, "sales":95.5, "profit":120.5, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":80, "2014":18 },
+{ "code": 700, "sales":54.8, "profit":98.3, "2004":50, "2005":40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":80, "2014":19, "h":10 },
+{ "code": 800, "sales":100.5, "profit":148.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":59, "2014":39, "h":-10, "v":-10 },
+{ "code": 900, "sales":135.8, "profit":40.0, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":7, "2014":89, "v":-20 },
+{ "code": 1000, "sales":119.3, "profit":133.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":13, "2014":86 },
+{ "code": 1100, "sales":39.5, "profit":34.7, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":56, "2014":42 },
+{ "code": 1200, "sales":1.3, "profit":145.5, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":49, "2014":50 },
+{ "code": 1300, "sales":23.5, "profit":113.2, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":51, "2014":47 },
+{ "code": 1400, "sales":11.7, "profit":213.2, "v":0, "2004":50, "2005":-40, "2006":-30, "2007":-60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":30, "2014":56 },
+{ "code": 1500, "sales":11.9, "profit":71.7, "2004":50, "2005":40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":20, "2014":78, "h":-15, "v":0 },
+{ "code": 1600, "sales":55.4, "profit":62.6, "2004":50, "2005":40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":11, "2014":87, "h":5 },
+{ "code": 1700, "sales":8.0, "profit":6.5, "2004":5, "2005":40, "2006":-30, "2007":60, "2008":10, "2009":-10, "2010":80, "2011":70, "2012":30, "2013":5, "2014":94, "h":-5, "v":-20 }
+];
+
+</script>
+</head>
+<body>
+	<div class="content">
+		<!-- 맵차트가 삽입될 DIV -->
+		<div id="mapHolder" style="background-color:#fff;">
+		</div>
+	</div>
+	<div id="footer">
+		맵차트 위 Div 시리즈에 외부 제품을 삽입할 수 있습니다.<br>
+		<b>해당 샘플은 rMateChart 제품을 연동한 샘플로 맵차트에 차트 제품은 포함되지 않습니다.</b><br>
+		지도의 "SVG의 id 값+MdivItem"이 생성된 Div의 ID 참조값입니다.<br>
+		아래의 Source 탭의 참고하시기 바랍니다.<br>
+	</div>
+</body>
+</html>

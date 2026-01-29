@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="AndhraPrades" symbol="AndhraPrades"/>
+	<State code="200" label="ArunachalPradesh" symbol="ArunachalPradesh"/>
+	<State code="300" label="Assam" symbol="Assam"/>
+	<State code="400" label="Bihar" symbol="Bihar"/>
+	<State code="500" label="Chhattisgarh" symbol="Chhattisgarh"/>
+	<State code="600" label="Goa" symbol="Goa"/>
+	<State code="700" label="Gujarat" symbol="Gujarat"/>
+	<State code="800" label="Haryana" symbol="Haryana"/>
+	<State code="900" label="HimachalPradesh" symbol="HimachalPradesh"/>
+	<State code="1000" label="JammuandKashmir" symbol="JammuandKashmir"/>
+	<State code="1100" label="Jharkhand" symbol="Jharkhand"/>
+	<State code="1200" label="Karnataka" symbol="Karnataka"/>
+	<State code="1300" label="Kerala" symbol="Kerala"/>
+	<State code="1400" label="MadhyaPradesh" symbol="MadhyaPradesh"/>
+	<State code="1500" label="Maharashtra" symbol="Maharashtra"/>
+	<State code="1600" label="Manipur" symbol="Manipur"/>
+	<State code="1700" label="Meghalaya" symbol="Meghalaya"/>
+	<State code="1800" label="Mizoram" symbol="Mizoram"/>
+	<State code="1900" label="Nagaland" symbol="Nagaland"/>
+	<State code="2000" label="Odisha" symbol="Odisha"/>
+	<State code="2100" label="Punjab" symbol="Punjab"/>
+	<State code="2200" label="Rajasthan" symbol="Rajasthan"/>
+	<State code="2300" label="Sikkim" symbol="Sikkim"/>
+	<State code="2400" label="TamilNadu" symbol="TamilNadu"/>
+	<State code="2500" label="Tripura" symbol="Tripura"/>
+	<State code="2600" label="UttarPradesh" symbol="UttarPradesh"/>
+	<State code="2700" label="Uttarakhand" symbol="Uttarakhand"/>
+	<State code="2800" label="WestBengal" symbol="WestBengal"/>
+	<State code="2900" label="Telangana" symbol="Telangana"/>
+	<State code="3000" label="AndamanandNicobarIslands" symbol="AndamanandNicobarIslands"/>
+	<State code="3100" label="Chandigarh" symbol="Chandigarh"/>
+	<State code="3200" label="DadraandNagarHaveli" symbol="DadraandNagarHaveli"/>
+	<State code="3300" label="Daman" symbol="Daman"/>
+	<State code="3400" label="Lakshadweep" symbol="Lakshadweep"/>
+	<State code="3500" label="Delhi" symbol="Delhi"/>
+	<State code="3600" label="Puducherry" symbol="Puducherry"/>
+</Map>

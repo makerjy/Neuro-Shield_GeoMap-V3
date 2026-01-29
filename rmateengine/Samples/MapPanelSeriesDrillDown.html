@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rMateMapChartH5 (RiaMore Soft)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<!-- rMateChartH5 라이센스 -->
+<script type="text/javascript" src="../LicenseKey/rMateMapChartH5License.js"></script>
+<!-- rMateMapChartH5 라이브러리 -->
+<script type="text/javascript" src="../rMateMapChartH5/JS/rMateMapChartH5.js"></script>
+<!-- rMateMapChartH5 CSS -->
+<link rel="stylesheet" type="text/css" href="../rMateMapChartH5/Assets/rMateMapChartH5.css"/>
+
+
+
+<script type="text/javascript">
+// -----------------------맵차트 설정 시작-----------------------
+// rMate 맵차트 생성 준비가 완료된 상태 시 호출할 함수를 지정합니다.
+var mapVars = "rMateOnLoadCallFunction=mapReadyHandler";
+
+// 맵차트의 속성인 rMateOnLoadCallFunction 으로 설정된 함수.
+// rMate 맵차트 준비가 완료된 경우 이 함수가 호출됩니다.
+// 이 함수를 통해 맵차트에 레이아웃과 데이터를 삽입합니다.
+// 파라메터 : id - rMateMapChartH5.create() 사용 시 사용자가 지정한 id 입니다.
+// 맵차트 콜백함수 7개 존재합니다.
+// 1. setLayout - 스트링으로 작성된 레이아웃 XML을 삽입합니다.
+// 2. setData - 배열로 작성된 데이터를 삽입합니다.
+// 3. setMapDataBase - 스트링으로 작성된 MapData XML을 삽입합니다.
+// 4. setLayoutURLEx - 레이아웃 XML 경로를 지시합니다.
+// 5. setDataURLEx - 데이터 XML 경로를 지시합니다.
+// 6. setMapDataBaseURLEx - MapData XML 경로를 지시합니다.
+// 7. setSourceURLEx - Map Source 경로를 지시합니다.
+function mapReadyHandler(id) {
+	document.getElementById(id).setLayout(layoutStr);
+	document.getElementById(id).setData(mapData);
+	document.getElementById(id).setMapDataBaseURLEx(mapDataBaseURL);
+	document.getElementById(id).setSourceURLEx(sourceURL);
+}
+
+// Map Data 경로 정의
+// setMapDataBase함수로 mapDataBase를 문자열로 넣어줄 경우 주석처리나 삭제하십시오.
+var mapDataBaseURL = "./MapDataBaseXml/SouthKoreaDrillDown_opacity.xml";
+
+// MapChart Source 선택
+// MapSource 디렉토리의 지도 이미지중 택일가능하며, 이외에 사용자가 작성한 별도의 Svg이미지를 지정할 수 있습니다.(매뉴얼 참조)
+var sourceURL = "./MapSource/SouthKoreaDrillDown.svg";
+
+// rMateMapChart 를 생성합니다.
+// 파라메터 (순서대로) 
+//  1. 맵차트의 id ( 임의로 지정하십시오. ) 
+//  2. 맵차트가 위치할 div 의 id (즉, 차트의 부모 div 의 id 입니다.)
+//  3. 맵차트 생성 시 필요한 환경 변수들의 묶음인 chartVars
+//  4. 맵차트의 가로 사이즈 (생략 가능, 생략 시 100%)
+//  5. 맵차트의 세로 사이즈 (생략 가능, 생략 시 100%)
+rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%");
+
+/*
+// ------------------------- 지역 데이타팁 사용자 정의 함수 -----------------------------------------------------
+// layout XML 에서 MapChart 속성을 넣을때 dataTipJsFunction을 주고, 만든 javascript 함수명을 넣어줍니다
+//   예) <MapChart dataTipJsFunction="dataTipFunction">
+//
+// 파라메터 설명
+//   seriesId : Series의 id
+//   code : 지역 코드 (mapDataBaseURL의 파일 참조)
+//   label : 지역명.
+//   data : 해당 지역코드로 dataURL을 통해 전달된 데이타
+//
+// 반환값
+//   해당 지역에 표시할 데이타팁 문자열
+*/
+
+function dataTipFunction(seriesId, code, label, data) {
+	if (seriesId == "panel") {
+		return label + " --  날씨:" + data.weather + "  --  기온:" + data.temperature;
+	} else
+		return label;
+}
+
+/*
+// ------------------------- 맵 클릭 연동 사용자 정의 함수 -----------------------------------------------------
+// layout XML 에서 Series 속성을 넣을때 itemClickJsFunction 주고, 만든 javascript 함수명을 넣어줍니다
+//   예) <MapPlotSeries itemClickJsFunction="itemClickFunction">
+//
+// 파라메터 설명
+//   seriesId : Series의 id
+//   code : 지역 코드 (mapDataBaseURL의 파일 참조)
+//   label : 지역명.
+//   data : 해당 지역코드로 dataURL을 통해 전달된 데이타
+//
+// 반환값
+//   없음
+*/
+
+function itemClickFunction(seriesId, code, label, data) {
+	alert("code:"+code+"\nlabel:"+label+"\n날씨:"+data.weather+"\n기온:"+data.temperature);
+}
+
+
+
+
+
+var layoutStr = '\
+<?xml version="1.0" encoding="utf-8"?>\
+<rMateMapChart>\
+	<MapChart id="mainMap" drillDownEnabled="true" showDataTips="true" dataTipJsFunction="dataTipFunction" itemClickJsFunction="itemClickFunction" showDataTipTargets="false" gutterTop="15" gutterBottom="15">\
+		<series>\
+			<MapSeries id="mapseries" interactive="true">\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000"/>\
+				</showDataEffect>\
+				<localFill>\
+					<SolidColor color="#ebf0f4"/>\
+				</localFill>\
+				<stroke>\
+					<Stroke color="#CAD7E0" weight="0.8" alpha="1"/>\
+				</stroke>\
+			</MapSeries>\
+<!--\n\
+adjustedRadius 사용자가 선택하거나 롤오버시 지점 마크의 크기 증가 픽셀수 (기본 0)\n\
+alpha 투명도 (기본 1)\n\
+areaCodeField dataProvider에서 지역 코드를 나타내는 필드명 (기본 code)\n\
+backgroundFill 판넬의 배경 색상 (기본 흰색)\n\
+bodyTextField dataProvider에서 판넬의 내용을 나타내는 필드명\n\
+cornerRadius 판넬의 모서리 반지름 (기본 4)\n\
+fill 표시할 색상\n\
+fillJsFunction 자바스크립트를 이용한 표시마크의 색상 변경기능 (자바스크립트에서 선언한 함수명을 넣어줍니다)\n\
+filters 시리즈에 적용할 필터\n\
+headerHeight 판넬의 헤더 높이 - itemRederer를 VPanelItemRenderer를 사용할 경우 지정할 수 있습니다.\n\
+headerWidth 판넬의 헤더 넓이 - itemRederer를 HPanelItemRenderer를 사용할 경우 지정할 수 있습니다.\n\
+hideDataEffect 지점이 사라질때 적용할 이펙트\n\
+horizontalAlign 판넬 바디의 수평 정렬 (left,right,center중 택일, 기본 left)\n\
+horizontalCenterGapField 지점 수평 이동좌표를 지정하는 data provider의 필드명\n\
+itemRenderer 판넬을 그리는 객체 (VPanelItemRenderer, HPanelItemRenderer등이 있습니다)\n\
+interactive 사용자 마우스 조작에 반응할지 여부 (true,false중 택일, 기본 true)\n\
+paddingLeft 왼쪽 끝과 컨텐츠 영역 왼쪽 사이의 픽셀 수 (기본 5)\n\
+paddingRight 오른쪽 끝과 컨텐츠 영역 오른쪽 사이의 픽셀 수 (기본 5)\n\
+paddingTop 윗쪽 끝과 컨텐츠 영역 윗쪽 사이의 픽셀 수 (기본 3)\n\
+paddingBottom 아랫쪽 끝과 컨텐츠 영역 아랫쪽 사이의 픽셀 수 (기본 3)\n\
+panelWidth 표시될 판넬의 넓이 - 지정하지 않으면 텍스트 크기에 따라 표시됩니다\n\
+panelHeight 표시될 판넬의 높이 - 지정하지 않으면 텍스트 크기에 따라 표시됩니다\n\
+showDataEffect 지점이 표시될때 적용할 이펙트\n\
+showHeader 헤더를 표시할지 여부 (true,false중 택일, 기본 true)\n\
+stroke 표시할 경계 라인 색상\n\
+titleField 판넬 제목을 지정하는 data provider의 필드명\n\
+titleJsFunction 자바스크립트를 이용한 판넬 제목 변경기능 (자바스크립트에서 선언한 함수명을 넣어줍니다)\n\
+titleStyleName 판넬 타이틀의 스타일명\n\
+useHandCursor 시리즈에 마우스가 올 경우 커서를 손모양으로 바꿀지 여부 (true,false중 택일, 기본 false)\n\
+useRevisedCenter mapDataBased에 설정된 중심 이동 값의 적용여부 (true,false중 택일, 기본 true)\n\
+verticalAlign 판넬 바디의 수직 정렬 (top,middle,bottom중 택일, 기본 top)\n\
+verticalCenterGapField 지점 수직 이동좌표를 지정하는 data provider의 필드명\n\
+wordWrap 판넬 바디 문자열의 자동 줄바꿈 여부 (true,false중 택일, 기본 false)\n\
+-->\
+			<MapPanelSeries id="panel" titleField="label" bodyTextField="temperature" horizontalCenterGapField="h" verticalCenterGapField="v" bodyColor="#555555" color="#FFFFFF" horizontalAlign="right" displayName="날씨" itemRenderer="VPanelItemRenderer" fill="#0B91FF" >\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000"/>\
+				</showDataEffect>\
+			</MapPanelSeries>\
+		</series>\
+	</MapChart>\
+	<Legend dataProvider="{mainMap}" useVisibleCheck="false" horizontalGap="3" direction="horizontal" borderStyle="solid" borderColor="0x999999" defaultMouseOverAction="true"/>\
+</rMateMapChart>\
+';
+
+var mapData = [
+						{ "code":100, "id":"w01", "label":"영동", "temperature":10, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":15, "h":35 },
+						{ "code":101, "id":"w02", "label":"영서", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":-15, "h":-15 },
+						{ "code":1100, "id":"w03", "label":"서해5도", "temperature":12, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":-15, "h":-30 },
+						{ "code":300, "id":"w04", "label":"경남", "temperature":13, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "h":20 },
+						{ "code":400, "id":"w05", "label":"울릉/독도", "temperature":8, "weather":"구름많음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/cloud.png", "v":-80, "h":95 },
+						{ "code":400, "id":"w06", "label":"경북", "temperature":13, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":15 },
+						{ "code":900, "id":"w07", "label":"서울/경기", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" },
+						{ "code":1200, "id":"w08", "label":"전남", "temperature":10, "weather":"비", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/rain.png" },
+						{ "code":1300, "id":"w09", "label":"전북", "temperature":8, "weather":"구름많음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/cloud.png" },
+						{ "code":1400, "id":"w10", "label":"제주", "temperature":15, "weather":"비", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/rain.png" },
+						{ "code":1401, "id":"w10", "label":"서귀포", "temperature":15, "weather":"비", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/rain.png" },
+						{ "code":1500, "id":"w11", "label":"충남", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" },
+						{ "code":1600, "id":"w12", "label":"충북", "temperature":10, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" }
+					];
+// -----------------------맵차트 설정 끝 -----------------------
+
+</script>
+<!-- 샘플 작동을 위한 css와 js -->
+<script type="text/javascript" src="./Web/JS/common.js"></script>
+<script type="text/javascript" src="./Web/JS/sample_util.js"></script>
+<link rel="stylesheet" type="text/css" href="./Web/sample.css"/>
+
+<!-- SyntaxHighlighter -->
+<script type="text/javascript" src="./Web/syntax/shCore.js"></script>
+<script type="text/javascript" src="./Web/syntax/shBrushJScript.js"></script>
+<link type="text/css" rel="stylesheet" href="./Web/syntax/shCoreDefault.css"/>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="header">
+			<div class="headerTitle">Panel Series Drilldown</div>
+		</div>
+		<div id="content">
+			<!-- 차트가 삽입될 DIV -->
+			<div id="mapHolder"></div>
+		</div>
+		<div class="description">
+		맵차트 위에 Panel 시리즈를 생성할 수 있습니다.<br>
+		아래의 Layout 탭의 주석처리된 부분에서 속성을 확인하실 수 있습니다.<br>
+		속성을 적용하신 후 우측의 업데이트 버튼을 누르시면 위의 맵차트에 적용됩니다
+		</div>
+
+		<div id="updater">
+						<div id="updaterTab">
+				<ul id="updaterTabUl">
+					<li id="updaterTabUlSource" class="active_tab">Source</li>
+					<li id="updaterTabUlLayout" class="non_active_li">Layout</li>
+					<li id="updaterTabUlData" class="non_active_li">Data</li>
+					<li id="updaterTabUlBlank">
+						<div id="btn_update">수정적용</div>
+					</li>
+				</ul>
+			</div>
+			<div id="updaterTarea">
+				<pre id="updaterTareaSource" class="brush:js toolbar:false" name="updaterTareaSource"></pre>
+				<textarea id="updaterTareaLayout" class="updaterTextarea" spellcheck="false"></textarea>
+				<textarea id="updaterTareaData" class="updaterTextarea" spellcheck="false"></textarea>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Script-Type" content="text/javascript"/>
+<meta http-equiv="Content-Style-Type" content="text/css"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>rMate MapChart for HTML5 - </title>
+
+<!-- rMateMapChartH5 에서 사용하는 스타일 -->
+<link rel="stylesheet" type="text/css" href="../rMateMapChartH5/Assets/rMateMapChartH5.css"/>
+
+<!-- rMateMapChartH5 라이센스 -->
+<script language="javascript" type="text/javascript" src="../LicenseKey/rMateMapChartH5License.js"></script>
+
+<!-- 실제적인 rMateMapChartH5 라이브러리 -->
+<script language="javascript" type="text/javascript" src="../rMateMapChartH5/JS/rMateMapChartH5.js"></script>
+
+<script type="text/javascript">
+
+// -----------------------맵차트 설정 시작-----------------------
+
+var chartCreated = false;
+
+window.onload = function(){
+	if(window.addEventListener)
+		window.addEventListener("scroll", function(event){
+			if(window.pageYOffset >= 1356 && !chartCreated){
+				chartCreated = true;
+				rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%"); 
+				window.scrollTo(0, 1800);
+			}
+		});
+	else
+		rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%"); 
+}
+
+// rMate 맵차트 생성 준비가 완료된 상태 시 호출할 함수를 지정합니다.
+var mapVars = "rMateOnLoadCallFunction=mapReadyHandler";
+
+// rMateMapChart 를 생성합니다.
+// 파라메터 (순서대로) 
+//  1. 맵차트의 id ( 임의로 지정하십시오. ) 
+//  2. 맵차트가 위치할 div 의 id (즉, 맵차트의 부모 div 의 id 입니다.)
+//  3. 맵차트 생성 시 필요한 환경 변수들의 묶음인 mapVars
+//  4. 맵차트의 가로 사이즈 (생략 가능, 생략 시 100%)
+//  5. 맵차트의 세로 사이즈 (생략 가능, 생략 시 100%)
+//rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%"); 
+
+// 맵차트의 속성인 rMateOnLoadCallFunction 으로 설정된 함수.
+// rMate 맵차트 준비가 완료된 경우 이 함수가 호출됩니다.
+// 이 함수를 통해 맵차트에 레이아웃과 데이터를 삽입합니다.
+// 파라메터 : id - rMateMapChartH5.create() 사용 시 사용자가 지정한 id 입니다.
+function mapReadyHandler(id) {
+	document.getElementById(id).setLayout(layoutStr);
+	document.getElementById(id).setData(mapData);
+	document.getElementById(id).setMapDataBaseURLEx(mapDataBaseURL);
+	document.getElementById(id).setSourceURLEx(sourceURL);
+}
+
+// Map Data 경로 정의
+// setMapDataBase함수로 mapDataBase를 문자열로 넣어줄 경우 주석처리나 삭제하십시오.
+var mapDataBaseURL = "./MapDataBaseXml/SouthKorea.xml";
+
+// MapChart Source 선택
+// MapSource 디렉토리의 지도 이미지중 택일가능하며, 이외에 사용자가 작성한 별도의 Svg이미지를 지정할 수 있습니다.(매뉴얼 참조)
+var sourceURL = "./MapSource/SouthKorea.svg";
+
+
+// 스트링 형식으로 레이아웃 정의.
+var layoutStr = '<?xml version="1.0" encoding="utf-8"?>'
++'<rMateMapChart>'
+	+'<MapChart id="mainMap" drillDownEnabled="false" showDataTips="true" dataTipJsFunction="dataTipFunction" itemClickJsFunction="itemClickFunction" showDataTipTargets="false" gutterTop="15" gutterBottom="15">'
+		+'<series>'
+			+'<MapSeries id="mapseries" interactive="false">'
+				+'<showDataEffect>'
+					+'<SeriesInterpolate duration="1000"/>'
+				+'</showDataEffect>'
+				+'<localFill>'
+					+'<SolidColor color="#F9F9F9"/>'
+				+'</localFill>'
+				+'<stroke>'
+					+'<Stroke color="#CAD7E0" weight="0.8" alpha="1"/>'
+				+'</stroke>'
+			+'</MapSeries>'
+			+'<MapPanelSeries id="panel" titleField="label" bodyTextField="temperature" horizontalCenterGapField="h" verticalCenterGapField="v" bodyColor="#555555" color="#FFFFFF" horizontalAlign="center" displayName="날씨" itemRenderer="VPanelItemRenderer" fill="#0B91FF" >'
+				+'<showDataEffect>'
+					+'<SeriesInterpolate duration="1000"/>'
+				+'</showDataEffect>'
+			+'</MapPanelSeries>'
+		+'</series>'
+	+'</MapChart>'
++'</rMateMapChart>';
+
+// 맵차트 데이터
+var mapData = [
+	{ "code":100, "id":"w01", "label":"영동", "temperature":10, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":15, "h":35 },
+	{ "code":100, "id":"w02", "label":"영서", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":-15, "h":-15 },
+	{ "code":1100, "id":"w03", "label":"서해5도", "temperature":12, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":-15, "h":-30 },
+	{ "code":300, "id":"w04", "label":"경남", "temperature":13, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "h":20 },
+	{ "code":400, "id":"w05", "label":"울릉/독도", "temperature":8, "weather":"구름많음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/cloud.png", "v":-80, "h":95 },
+	{ "code":400, "id":"w06", "label":"경북", "temperature":13, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":15 },
+	{ "code":900, "id":"w07", "label":"서울/경기", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" },
+	{ "code":1200, "id":"w08", "label":"전남", "temperature":10, "weather":"비", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/rain.png" },
+	{ "code":1300, "id":"w09", "label":"전북", "temperature":8, "weather":"구름많음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/cloud.png" },
+	{ "code":1400, "id":"w10", "label":"제주", "temperature":15, "weather":"비", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/rain.png" },
+	{ "code":1500, "id":"w11", "label":"충남", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" },
+	{ "code":1600, "id":"w12", "label":"충북", "temperature":10, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" }
+];
+
+// -----------------------맵차트 설정 끝 -----------------------
+
+</script>
+<!-- 샘플 작동을 위한 css와 js -->
+<script type="text/javascript" src="./Web/JS/common.js"></script>
+<link rel="stylesheet" type="text/css" href="./Web/sample.css"/>
+
+</head>
+<body>
+	<div id="wrapper" class="wrapper" style="padding-top:15px;">
+		<span class="tuto">1. HTML에 맵차트의 JS와 CSS, LicenseKey를 Include 합니다.</span>
+		<div class="description">
+			<span class="comment">&lt;!-- rMateMapChartH5 에서 사용하는 스타일 --&gt;</span><br/>
+			&lt;link rel="stylesheet" type="text/css" href="../rMateMapChartH5/Assets/rMateMapChartH5.css"/&gt;<br/><br/>
+
+			<span class="comment">&lt;!-- rMateMapChartH5 라이센스 --&gt;</span><br/>
+			&lt;script language="javascript" type="text/javascript" src="../LicenseKey/rMateMapChartH5License.js"&gt;&lt;/script&gt;<br/><br/>
+
+			<span class="comment">&lt;!-- 실제적인 rMateMapChartH5 라이브러리 --&gt;</span><br/>
+			&lt;script language="javascript" type="text/javascript" src="../rMateMapChartH5/JS/rMateMapChartH5.js"&gt;&lt;/script&gt;<br/><br/>
+		</div>
+		<span class="tuto">2. 맵차트가 생성되어질 DIV를 생성하고 크기를 설정합니다.</span>
+		<div class="description">
+			<span class="comment">해당 div의 display값이 none일 경우는 크기를 제대로 가져오지 못하여 올바르게 출력이 되지 않을 수 있습니다.</span><br/><br/>
+			&lt;div id="mapHolder" style="width:800px;height:450px;"&gt;&lt;div&gt;
+		</div>
+		<span class="tuto">3. 맵차트가 생성되어질 DIV의 ID, 만들어질 맵차트의 ID를 설정 및 크기를 설정하고 맵차트 준비 완료시 실행할 함수를 설정합니다.</span>
+		<div class="description">
+			<span class="comment">// rMate 맵차트 생성 준비가 완료된 상태 시 호출할 함수를 지정합니다.</span><br/>
+			var mapVars = "rMateOnLoadCallFunction=mapReadyHandler";<br/><br/>
+
+			<span class="comment">// rMateMapChart 를 생성합니다.<br/>
+			// 파라메터 (순서대로) <br/>
+			//  1. 맵차트의 id ( 임의로 지정하십시오. ) <br/>
+			//  2. 맵차트가 위치할 div 의 id (즉, 맵차트의 부모 div 의 id 입니다.)<br/>
+			//  3. 맵차트 생성 시 필요한 환경 변수들의 묶음인 mapVars<br/>
+			//  4. 맵차트의 가로 사이즈 (생략 가능, 생략 시 100%)<br/>
+			//  5. 맵차트의 세로 사이즈 (생략 가능, 생략 시 100%)</span><br/>
+			rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%");<br/><br/>
+			
+			<span class="comment">// 맵차트의 속성인 rMateOnLoadCallFunction 으로 설정된 함수.<br/>
+			// rMate 맵차트 준비가 완료된 경우 이 함수가 호출됩니다.<br/>
+			// 이 함수를 통해 맵차트에 레이아웃과 데이터를 삽입합니다.<br/>
+			// 파라메터 : id - rMateMapChartH5.create() 사용 시 사용자가 지정한 id 입니다.</span><br/>
+			function mapReadyHandler(id){<br/>
+			&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById(id).setLayout(layoutStr);<br/>
+			&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById(id).setData(mapData);<br/>
+			&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById(id).setMapDataBaseURLEx(mapDataBaseURL);<br/>
+			&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById(id).setSourceURLEx(sourceURL);<br/>
+			}
+		</div>
+
+		<span class="tuto">4. 어떤 맵차트를 생성할지 맵차트의 맵데이터XML과 맵소스를 정의합니다.</span>
+		<div class="description">
+			<span class="comment">// // Map Data 경로 정의</span>
+			<pre style="margin-top:0;">var mapDataBaseURL = "./MapDataBaseXml/SouthKorea.xml";
+				</pre>
+		</div>
+		<div class="description">
+			<span class="comment">// // Map Source 경로 정의</span>
+			<pre style="margin-top:0;">var sourceURL = "./MapSource/SouthKorea.svg";
+				</pre>
+		</div>
+		<span class="tuto">5. 어떤 맵차트를 생성할지 맵차트의 모양(레이아웃)을 정의합니다.</span>
+		<div class="description">
+			<span class="comment">// 스트링 형식으로 레이아웃 정의</span>
+				<pre style="margin-top:0;">var layoutStr = '&lt;rMateMapChart&gt;'
+	+'&lt;MapChart id="mainMap" drillDownEnabled="false" showDataTips="true" dataTipJsFunction="dataTipFunction" itemClickJsFunction="itemClickFunction" showDataTipTargets="false" gutterTop="15" gutterBottom="15"&gt;'
+		+'&lt;series&gt;'
+			+'&lt;MapSeries id="mapseries" interactive="false"&gt;'
+				+'&lt;showDataEffect&gt;'
+					+'&lt;SeriesInterpolate duration="1000"/&gt;'
+				+'&lt;/showDataEffect&gt;'
+				+'&lt;localFill&gt;'
+					+'&lt;SolidColor color="#F9F9F9"/&gt;'
+				+'&lt;/localFill&gt;'
+				+'&lt;stroke&gt;'
+					+'&lt;Stroke color="#CAD7E0" weight="0.8" alpha="1"/&gt;'
+				+'&lt;/stroke&gt;'
+			+'&lt;/MapSeries&gt;'
+			+'&lt;MapPanelSeries id="panel" titleField="label" bodyTextField="temperature" horizontalCenterGapField="h" verticalCenterGapField="v" bodyColor="#555555" color="#FFFFFF" horizontalAlign="center" displayName="날씨" itemRenderer="VPanelItemRenderer" fill="#0B91FF" &gt;'
+				+'&lt;showDataEffect&gt;'
+					+'&lt;SeriesInterpolate duration="1000"/&gt;'
+				+'&lt;/showDataEffect&gt;'
+			+'&lt;/MapPanelSeries&gt;'
+		+'&lt;/series&gt;'
+	+'&lt;/MapChart&gt;'
++'&lt;/rMateMapChart&gt;';</pre>
+		</div>
+		<span class="tuto">6. 설정한 맵차트의 모양으로 출력할 데이터를 정의합니다.</span>
+		<div class="description">
+			<span class="comment">// 맵차트 데이터</span><br/>
+			<pre style="margin-top:0;">var mapData = [
+	{ "code":100, "id":"w01", "label":"영동", "temperature":10, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":15, "h":35 },
+	{ "code":100, "id":"w02", "label":"영서", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":-15, "h":-15 },
+	{ "code":1100, "id":"w03", "label":"서해5도", "temperature":12, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":-15, "h":-30 },
+	{ "code":300, "id":"w04", "label":"경남", "temperature":13, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "h":20 },
+	{ "code":400, "id":"w05", "label":"울릉/독도", "temperature":8, "weather":"구름많음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/cloud.png", "v":-80, "h":95 },
+	{ "code":400, "id":"w06", "label":"경북", "temperature":13, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png", "v":15 },
+	{ "code":900, "id":"w07", "label":"서울/경기", "temperature":7, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" },
+	{ "code":1200, "id":"w08", "label":"전남", "temperature":10, "weather":"비", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/rain.png" },
+	{ "code":1300, "id":"w09", "label":"전북", "temperature":8, "weather":"구름많음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/cloud.png" },
+	{ "code":1400, "id":"w10", "label":"제주", "temperature":15, "weather":"비", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/rain.png" },
+	{ "code":1500, "id":"w11", "label":"충남", "temperature":9, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" },
+	{ "code":1600, "id":"w12", "label":"충북", "temperature":10, "weather":"맑음", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/sun.png" }
+];</pre>
+		</div>
+		<div class="description">
+			이후 HTML 실행 시 DOM이 완료되고 맵차트의 준비가 완료된 경우 mapReadyHandler함수가 실행이 되며<br/>
+			설정해두었던 layoutStr, mapData가 맵차트 객체에 삽입되며 아래와 같은 맵차트를 생성하게 됩니다.
+		</div>
+		<div id="content" style="margin-top:30px;">
+			<div id="mapHolder"></div>
+		</div>
+	</div>
+</body>
+</html>

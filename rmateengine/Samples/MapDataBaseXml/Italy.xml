@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="Abruzzo" symbol="Abruzzo"/>
+	<State code="200" label="ValledAosta" symbol="ValledAosta"/>
+	<State code="300" label="Puglia" symbol="Puglia"/>
+	<State code="400" label="Basilicata" symbol="Basilicata"/>
+	<State code="500" label="Calabria" symbol="Calabria"/>
+	<State code="600" label="Campania" symbol="Campania"/>
+	<State code="700" label="EmiliaRomagna" symbol="EmiliaRomagna"/>
+	<State code="800" label="FriuliVeneziaGiulia" symbol="FriuliVeneziaGiulia"/>
+	<State code="900" label="Lazio" symbol="Lazio"/>
+	<State code="1000" label="Liguria" symbol="Liguria"/>
+	<State code="1100" label="Lombardia" symbol="Lombardia"/>
+	<State code="1200" label="Marche" symbol="Marche"/>
+	<State code="1300" label="Molise" symbol="Molise"/>
+	<State code="1400" label="Piemonte" symbol="Piemonte"/>
+	<State code="1500" label="Sardegna" symbol="Sardegna"/>
+	<State code="1600" label="Sicilia" symbol="Sicilia"/>
+	<State code="1700" label="TrentinoAltoAdige" symbol="TrentinoAltoAdige"/>
+	<State code="1800" label="Toscana" symbol="Toscana"/>
+	<State code="1900" label="Umbria" symbol="Umbria"/>
+	<State code="2000" label="Veneto" symbol="Veneto"/>
+</Map>

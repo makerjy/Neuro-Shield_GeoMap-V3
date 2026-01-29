@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="WesternCape" symbol="WesternCape"/>
+	<State code="200" label="NorthernCape" symbol="NorthernCape"/>
+	<State code="300" label="EasternCape" symbol="EasternCape"/>
+	<State code="400" label="KwazuluNatal" symbol="KwazuluNatal"/>
+	<State code="500" label="FreeState" symbol="FreeState"/>
+	<State code="600" label="NorthWest" symbol="NorthWest"/>
+	<State code="700" label="Gautenge" symbol="Gautenge"/>
+	<State code="800" label="Mpumalanga" symbol="Mpumalanga"/>
+	<State code="900" label="Limpopo" symbol="Limpopo"/>
+</Map>

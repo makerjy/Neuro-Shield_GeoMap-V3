@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rMateMapChart>
+<!--
+mapChangeJsFunction 맵클릭시 불러질 자바스크립트연동 기능 (자바스크립트에서 선언한 함수명을 넣어줍니다)
+-->
+	<MapChart id="mainMap" drillDownEnabled="true" showDataTips="true" mapChangeJsFunction="clickFunction2" rootCode="900">
+		<series>
+			<MapSeries id="mapseries" selectionMarking="line" labelPosition="inside" displayName="지방" color="#555555">
+				<showDataEffect>
+					<SeriesInterpolate duration="1000"/>
+				</showDataEffect>
+				<localFill>
+					<SolidColor color="#D0E4F8"/>
+				</localFill>
+				<stroke>
+					<Stroke color="#F9F9F9" weight="0.8" alpha="1"/>
+				</stroke>
+			</MapSeries>
+		</series>
+	</MapChart>
+</rMateMapChart>

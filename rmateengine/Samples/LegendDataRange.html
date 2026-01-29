@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rMateMapChartH5 (RiaMore Soft)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<link rel="stylesheet" type="text/css" href="./rMateMapChartH5Sample.css"/>
+
+<!-- rMateChartH5 라이센스 -->
+<script type="text/javascript" src="../LicenseKey/rMateMapChartH5License.js"></script>
+<!-- rMateMapChartH5 라이브러리 -->
+<script type="text/javascript" src="../rMateMapChartH5/JS/rMateMapChartH5.js"></script>
+<!-- rMateMapChartH5 CSS -->
+<link rel="stylesheet" type="text/css" href="../rMateMapChartH5/Assets/rMateMapChartH5.css"/>
+
+
+<script type="text/javascript">
+
+
+// rMate 맵차트 생성 준비가 완료된 상태 시 호출할 함수를 지정합니다.
+var mapVars = "rMateOnLoadCallFunction=mapReadyHandler";
+var mapVars2 = "rMateOnLoadCallFunction=mapReadyHandler2";
+
+// 맵차트의 속성인 rMateOnLoadCallFunction 으로 설정된 함수.
+// rMate 맵차트 준비가 완료된 경우 이 함수가 호출됩니다.
+// 이 함수를 통해 맵차트에 레이아웃과 데이터를 삽입합니다.
+// 파라메터 : id - rMateMapChartH5.create() 사용 시 사용자가 지정한 id 입니다.
+// 맵차트 콜백함수 7개 존재합니다.
+// 1. setLayout - 스트링으로 작성된 레이아웃 XML을 삽입합니다.
+// 2. setData - 배열로 작성된 데이터를 삽입합니다.
+// 3. setMapDataBase - 스트링으로 작성된 MapData XML을 삽입합니다.
+// 4. setLayoutURLEx - 레이아웃 XML 경로를 지시합니다.
+// 5. setDataURLEx - 데이터 XML 경로를 지시합니다.
+// 6. setMapDataBaseURLEx - MapData XML 경로를 지시합니다.
+// 7. setSourceURLEx - Map Source 경로를 지시합니다.
+function mapReadyHandler(id) {
+	document.getElementById(id).setLayout(layoutStr);
+	document.getElementById(id).setData(mapData);
+	document.getElementById(id).setMapDataBaseURLEx(mapDataBaseURL);
+	document.getElementById(id).setSourceURLEx(sourceURL);
+}
+
+function mapReadyHandler2(id) {
+	document.getElementById(id).setLayout(layoutStr2);
+	document.getElementById(id).setData(mapData2);
+	document.getElementById(id).setMapDataBaseURLEx(mapDataBaseURL);
+	document.getElementById(id).setSourceURLEx(sourceURL);
+}
+
+// Map Data 경로 정의
+// setMapDataBase함수로 mapDataBase를 문자열로 넣어줄 경우 주석처리나 삭제하십시오.
+var mapDataBaseURL = "./MapDataBaseXml/SouthKoreaDrillDown_opacity.xml";
+
+// MapChart Source 선택
+// MapSource 디렉토리의 지도 이미지중 택일가능하며, 이외에 사용자가 작성한 별도의 Svg이미지를 지정할 수 있습니다.(매뉴얼 참조)
+var sourceURL = "./MapSource/SouthKoreaDrillDown.svg";
+
+// rMateMapChart 를 생성합니다.
+// 파라메터 (순서대로) 
+//  1. 맵차트의 id ( 임의로 지정하십시오. ) 
+//  2. 맵차트가 위치할 div 의 id (즉, 차트의 부모 div 의 id 입니다.)
+//  3. 맵차트 생성 시 필요한 환경 변수들의 묶음인 chartVars
+//  4. 맵차트의 가로 사이즈 (생략 가능, 생략 시 100%)
+//  5. 맵차트의 세로 사이즈 (생략 가능, 생략 시 100%)
+rMateMapChartH5.create("map1", "mapHolder", mapVars, "100%", "100%");
+rMateMapChartH5.create("map2", "mapHolder2", mapVars2, "100%", "100%");
+
+/*
+// ------------------------- 지역 이미지 색상 사용자 정의 함수 -----------------------------------------------------
+// layout XML 에서 MapSeries 속성을 넣을때 localFillJsFunction를 주고, 만든 javascript 함수명을 넣어줍니다
+//   예) <MapSeries localFillJsFunction="colorFunction">
+//
+// 파라메터 설명
+//   code : 지역 코드 (mapDataBaseURL의 파일 참조)
+//   label : 지역명.
+//   data : 해당 지역코드로 dataURL을 통해 전달된 데이타
+//
+// 반환값
+//   해당 지역에 표시할 색상
+*/
+
+function colorFunction(code, label, data) {
+	if (code == "100" || data.sales < 30)
+		return "#BFE4FF";
+	else if (data.sales < 50)
+		return "#B6C5FF";
+	else if (data.sales < 90)
+		return "#90B2FF";
+	else
+		return "#5589F2";
+}
+
+//----------------------- 맵차트 설정 끝 -----------------------
+
+var layoutStr2 = '\
+<?xml version="1.0" encoding="utf-8"?>\
+<!--\n\
+horizontalAlign 수평정렬 (left,right,center중 택일, 기본 center)\n\
+-->\
+<rMateMapChart horizontalAlign="center">\
+	<DataRangeLegend width="200" height="30" minimum="0" maximum="250" dataRangeHeight="15" fontSize="10" arrowOffset="0" interval="50" showArrow="true" tickGap="5" stroke="#000000" arrowColor="#ffffff" arrowStroke="#000000"/>\
+	<MapChart id="mainMap" drillDownEnabled="false" showDataTips="true">\
+		<series>\
+			<MapSeries id="mapseries" interactive="true">\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000"/>\
+				</showDataEffect>\
+				<stroke>\
+					<Stroke color="#CAD7E0" weight="0.8" alpha="1"/>\
+				</stroke>\
+			</MapSeries>\
+			<MapPlotSeries id="plot1" areaCodeField="branchCode" labelField="branchName" horizontalCenterGapField="h" verticalCenterGapField="v" adjustedRadius="15" fill="#00ff00" labelPositionField="lapos" color="#00E000" fontWeight="bold" labelPosition="bottom" displayName="지점" >\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000"/>\
+				</showDataEffect>\
+			</MapPlotSeries>\
+			<MapPlotSeries id="plot2" areaCodeField="factoryCode" labelField="factoryName" horizontalCenterGapField="h" verticalCenterGapField="v" adjustedRadius="5" fill="#00aaff" labelPositionField="lapos" color="#00AAFF" fontWeight="bold" labelPosition="bottom" itemRenderer="TriangleItemRenderer" displayName="공장">\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000"/>\
+				</showDataEffect>\
+			</MapPlotSeries>\
+		</series>\
+	</MapChart>\
+</rMateMapChart>\
+';
+
+
+var mapData2 = [
+{"branchCode":100,"branchName":"강원지점","v":2,"h":30,"address":"강원 강릉시 포남동 1109"},
+{"branchCode":200,"branchName":"수원지점","v":-6,"h":-13,"address":"경기 수원시 팔달구 화서동 223"},
+{"branchCode":500,"branchName":"광주지점","address":"강광주 서구 금호동 762"},
+{"branchCode":700,"branchName":"대전지점","address":"대전 유성구 봉명동 536"},
+{"branchCode":800,"branchName":"부산지점","lapos":"right","address":"부산 중구 보수동1가 95"},
+{"branchCode":900,"branchName":"종로지점","v":-7,"lapos":"top","address":"서울 종로구 종로2가 84"},
+{"branchCode":900,"branchName":"영등포지점","v":2,"h":-7,"lapos":"left","address":"강서울 영등포구 영등포동6가 89"},
+{"branchCode":900,"branchName":"강남지점","v":3,"h":7,"lapos":"right","address":"서울 강남구 역삼동 670"},
+{"factoryCode":1600,"factoryName":"청주공장","v":16,"h":-22,"lapos":"right","address":"충북 청주시 흥덕구 봉명동 172"},
+{"factoryCode":300,"factoryName":"창원공장","v":6,"h":18,"lapos":"left","address":"경남 창원시 성산구 웅남동 40"},
+{"factoryCode":400,"factoryName":"영천공장","v":31,"h":14,"address":"경북 영천시 대전동 564"}
+];
+
+
+var layoutStr = '\
+<?xml version="1.0" encoding="utf-8"?>\
+<rMateMapChart horizontalAlign="center">\
+	<MapChart id="mainMap" showDataTips="true">\
+		<series>\
+			<MapSeries id="mapseries" selectionMarking="line" labelPosition="inside" displayName="Map Series" localFillByRange="[#ffff00, #ffffee,#ff0000]" rangeLegendDataField="sales" localFillJsFunction="colorFunction">\
+				<showDataEffect>\
+					<SeriesInterpolate duration="1000"/>\
+				</showDataEffect>\
+				<stroke>\
+					<Stroke color="#FFF" weight="0.8" alpha="1"/>\
+				</stroke>\
+			</MapSeries>\
+		</series>\
+	</MapChart>\
+	<DataRangeLegend width="200" height="30" minimum="0" maximum="250" dataRangeHeight="15" fontSize="10" arrowOffset="0" interval="50" showArrow="true" tickGap="5" stroke="#000000" arrowColor="#ffffff" arrowStroke="#000000" colors = "[#ffff00, #ffffee,#ff0000]"/>\
+</rMateMapChart>\
+';
+
+
+var mapData = [{"code":100, "sales":240, "profit":540},
+{"code":101, "sales":100, "profit":30},
+{"code":102, "sales":100, "profit":30},
+{"code":103, "sales":100, "profit":30},
+{"code":104, "sales":100, "profit":30},
+{"code":105, "sales":100, "profit":30},
+{"code":106, "sales":100, "profit":30},
+{"code":107, "sales":100, "profit":30},
+{"code":108, "sales":100, "profit":30},
+{"code":109, "sales":100, "profit":30},
+{"code":110, "sales":100, "profit":30},
+{"code":111, "sales":100, "profit":30},
+{"code":112, "sales":100, "profit":30},
+{"code":113, "sales":100, "profit":30},
+{"code":114, "sales":100, "profit":30},
+{"code":115, "sales":100, "profit":30},
+{"code":116, "sales":100, "profit":30},
+{"code":117, "sales":100, "profit":30},
+{"code":118, "sales":100, "profit":30},
+{"code":200, "sales":95.9, "profit":17.7},
+{"code":201, "sales":113, "profit":20},
+{"code":202, "sales":113, "profit":20},
+{"code":203, "sales":113, "profit":20},
+{"code":204, "sales":113, "profit":20},
+{"code":205, "sales":113, "profit":20},
+{"code":206, "sales":113, "profit":20},
+{"code":207, "sales":113, "profit":20},
+{"code":208, "sales":113, "profit":20},
+{"code":209, "sales":113, "profit":20},
+{"code":210, "sales":113, "profit":20},
+{"code":211, "sales":113, "profit":20},
+{"code":212, "sales":113, "profit":20},
+{"code":213, "sales":113, "profit":20},
+{"code":214, "sales":113, "profit":20},
+{"code":215, "sales":113, "profit":20},
+{"code":216, "sales":113, "profit":20},
+{"code":217, "sales":113, "profit":20},
+{"code":218, "sales":113, "profit":20},
+{"code":219, "sales":113, "profit":20},
+{"code":220, "sales":113, "profit":20},
+{"code":221, "sales":113, "profit":20},
+{"code":222, "sales":113, "profit":20},
+{"code":223, "sales":113, "profit":20},
+{"code":224, "sales":113, "profit":20},
+{"code":225, "sales":113, "profit":20},
+{"code":226, "sales":113, "profit":20},
+{"code":227, "sales":113, "profit":20},
+{"code":228, "sales":113, "profit":20},
+{"code":229, "sales":113, "profit":20},
+{"code":230, "sales":113, "profit":20},
+{"code":231, "sales":113, "profit":20},
+{"code":300, "sales":46.7, "profit":125.6},
+{"code":301, "sales":94, "profit":18},
+{"code":302, "sales":94, "profit":18},
+{"code":303, "sales":94, "profit":18},
+{"code":304, "sales":94, "profit":18},
+{"code":305, "sales":94, "profit":18},
+{"code":306, "sales":94, "profit":18},
+{"code":307, "sales":94, "profit":18},
+{"code":308, "sales":94, "profit":18},
+{"code":309, "sales":94, "profit":18},
+{"code":310, "sales":94, "profit":18},
+{"code":311, "sales":94, "profit":18},
+{"code":312, "sales":94, "profit":18},
+{"code":313, "sales":94, "profit":18},
+{"code":314, "sales":94, "profit":18},
+{"code":315, "sales":94, "profit":18},
+{"code":316, "sales":94, "profit":18},
+{"code":317, "sales":94, "profit":18},
+{"code":318, "sales":94, "profit":18},
+{"code":319, "sales":94, "profit":18},
+{"code":320, "sales":94, "profit":18},
+{"code":400, "sales":75.9, "profit":43.7},
+{"code":401, "sales":106, "profit":29},
+{"code":402, "sales":106, "profit":29},
+{"code":403, "sales":106, "profit":29},
+{"code":404, "sales":106, "profit":29},
+{"code":405, "sales":106, "profit":29},
+{"code":406, "sales":106, "profit":29},
+{"code":407, "sales":106, "profit":29},
+{"code":408, "sales":106, "profit":29},
+{"code":409, "sales":106, "profit":29},
+{"code":410, "sales":106, "profit":29},
+{"code":411, "sales":106, "profit":29},
+{"code":412, "sales":106, "profit":29},
+{"code":413, "sales":106, "profit":29},
+{"code":414, "sales":106, "profit":29},
+{"code":415, "sales":106, "profit":29},
+{"code":416, "sales":106, "profit":29},
+{"code":417, "sales":106, "profit":29},
+{"code":418, "sales":106, "profit":29},
+{"code":419, "sales":106, "profit":29},
+{"code":420, "sales":106, "profit":29},
+{"code":421, "sales":106, "profit":29},
+{"code":422, "sales":106, "profit":29},
+{"code":423, "sales":106, "profit":29},
+{"code":500, "sales":61.1, "profit":155.9},
+{"code":501, "sales":226, "profit":67},
+{"code":502, "sales":226, "profit":67},
+{"code":503, "sales":226, "profit":67},
+{"code":504, "sales":226, "profit":67},
+{"code":505, "sales":226, "profit":67},
+{"code":600, "sales":25.5, "profit":120.5},
+{"code":601, "sales":179, "profit":45},
+{"code":602, "sales":179, "profit":45},
+{"code":603, "sales":179, "profit":45},
+{"code":604, "sales":179, "profit":45},
+{"code":605, "sales":179, "profit":45},
+{"code":606, "sales":179, "profit":45},
+{"code":607, "sales":179, "profit":45},
+{"code":608, "sales":179, "profit":45},
+{"code":700, "sales":54.8, "profit":98.3},
+{"code":701, "sales":193, "profit":49},
+{"code":702, "sales":193, "profit":49},
+{"code":703, "sales":193, "profit":49},
+{"code":704, "sales":193, "profit":49},
+{"code":705, "sales":193, "profit":49},
+{"code":800, "sales":100.5, "profit":148.7},
+{"code":801, "sales":154, "profit":49},
+{"code":802, "sales":111, "profit":49},
+{"code":803, "sales":140.4, "profit":0.1},
+{"code":804, "sales":123.1, "profit":125.8},
+{"code":805, "sales":105.8, "profit":133.3},
+{"code":806, "sales":112.1, "profit":89.9},
+{"code":807, "sales":75.1, "profit":106.4},
+{"code":808, "sales":98.8, "profit":104.7},
+{"code":809, "sales":85.9, "profit":60.7},
+{"code":810, "sales":61.9, "profit":145.2},
+{"code":811, "sales":93.8, "profit":137.8},
+{"code":812, "sales":134.4, "profit":113.2},
+{"code":813, "sales":113.1, "profit":105},
+{"code":814, "sales":107.6, "profit":157.5},
+{"code":815, "sales":103.3, "profit":151.3},
+{"code":816, "sales":143, "profit":76.8},
+{"code":900, "sales":45.8, "profit":40},
+{"code":901, "sales":167.1, "profit":138.2},
+{"code":902, "sales":233.3, "profit":102.1},
+{"code":903, "sales":144.7, "profit":15.4},
+{"code":904, "sales":0, "profit":82.8},
+{"code":905, "sales":91.3, "profit":175.2},
+{"code":906, "sales":197, "profit":107.8},
+{"code":907, "sales":31.8, "profit":156.7},
+{"code":908, "sales":73.7, "profit":181.8},
+{"code":909, "sales":186.4, "profit":5},
+{"code":910, "sales":163.3, "profit":0},
+{"code":911, "sales":173.9, "profit":80.5},
+{"code":912, "sales":93.4, "profit":153.3},
+{"code":913, "sales":63.3, "profit":93.8},
+{"code":914, "sales":92.1, "profit":80.1},
+{"code":915, "sales":145.1, "profit":147.7},
+{"code":916, "sales":164.6, "profit":109.1},
+{"code":917, "sales":139.7, "profit":55.4},
+{"code":918, "sales":203.8, "profit":134.7},
+{"code":919, "sales":37.8, "profit":129.5},
+{"code":920, "sales":77.5, "profit":127.6},
+{"code":921, "sales":120.6, "profit":124.2},
+{"code":922, "sales":80, "profit":37.2},
+{"code":923, "sales":125, "profit":60},
+{"code":924, "sales":132.3, "profit":110.4},
+{"code":925, "sales":205.4, "profit":67.8},
+{"code":1000, "sales":119.3, "profit":133.7},
+{"code":1001, "sales":140.3, "profit":97.5},
+{"code":1002, "sales":218.1, "profit":84.8},
+{"code":1003, "sales":166, "profit":23},
+{"code":1004, "sales":0.1, "profit":0},
+{"code":1005, "sales":147.4, "profit":70.8},
+{"code":1100, "sales":39.5, "profit":34.7},
+{"code":1101, "sales":6.9, "profit":0.9},
+{"code":1102, "sales":136.3, "profit":113.2},
+{"code":1103, "sales":115.9, "profit":167.9},
+{"code":1104, "sales":133.1, "profit":172.8},
+{"code":1105, "sales":108.3, "profit":162.8},
+{"code":1106, "sales":136.5, "profit":149.1},
+{"code":1107, "sales":91.3, "profit":91.4},
+{"code":1108, "sales":116.8, "profit":190.1},
+{"code":1109, "sales":8.9, "profit":206},
+{"code":1110, "sales":0, "profit":142.7},
+{"code":1200, "sales":1.3, "profit":145.5},
+{"code":1201, "sales":126.9, "profit":125},
+{"code":1202, "sales":195.4, "profit":117.6},
+{"code":1203, "sales":190.5, "profit":27.8},
+{"code":1204, "sales":255, "profit":54.2},
+{"code":1205, "sales":232.1, "profit":21.6},
+{"code":1206, "sales":105.5, "profit":65.7},
+{"code":1207, "sales":156.1, "profit":3.3},
+{"code":1208, "sales":83, "profit":113.5},
+{"code":1209, "sales":65.7, "profit":59},
+{"code":1210, "sales":174.3, "profit":91},
+{"code":1211, "sales":203.2, "profit":52.9},
+{"code":1212, "sales":0, "profit":59.6},
+{"code":1213, "sales":254.8, "profit":106.2},
+{"code":1214, "sales":74.7, "profit":10.2},
+{"code":1215, "sales":84.2, "profit":96.6},
+{"code":1216, "sales":123.8, "profit":193.8},
+{"code":1217, "sales":116.7, "profit":0.1},
+{"code":1218, "sales":147.5, "profit":109.4},
+{"code":1219, "sales":33.7, "profit":160},
+{"code":1220, "sales":85.2, "profit":45.7},
+{"code":1221, "sales":68.4, "profit":129.1},
+{"code":1222, "sales":155.4, "profit":48.9},
+{"code":1300, "sales":23.5, "profit":113.2},
+{"code":1301, "sales":0, "profit":132},
+{"code":1302, "sales":26, "profit":21.1},
+{"code":1303, "sales":50.1, "profit":53.4},
+{"code":1304, "sales":139.2, "profit":135.4},
+{"code":1305, "sales":203.3, "profit":18.8},
+{"code":1306, "sales":6.9, "profit":78.9},
+{"code":1307, "sales":81.5, "profit":138.2},
+{"code":1308, "sales":115.5, "profit":5.8},
+{"code":1309, "sales":79.9, "profit":-0.1},
+{"code":1310, "sales":123.3, "profit":86.6},
+{"code":1311, "sales":172.5, "profit":70.3},
+{"code":1312, "sales":105.9, "profit":57.4},
+{"code":1313, "sales":53.7, "profit":91.1},
+{"code":1314, "sales":156.7, "profit":27.1},
+{"code":1400, "sales":91.7, "profit":213.2},
+{"code":1401, "sales":1.2, "profit":32.2},
+{"code":1402, "sales":0, "profit":0.1},
+{"code":1500, "sales":41.9, "profit":71.7},
+{"code":1501, "sales":186.8, "profit":141},
+{"code":1502, "sales":134.2, "profit":76.7},
+{"code":1503, "sales":208.6, "profit":154.4},
+{"code":1504, "sales":151.3, "profit":141.7},
+{"code":1505, "sales":61.4, "profit":-0.1},
+{"code":1506, "sales":62.8, "profit":105.9},
+{"code":1507, "sales":98.8, "profit":133.9},
+{"code":1508, "sales":38.1, "profit":8.6},
+{"code":1509, "sales":64.6, "profit":170.5},
+{"code":1510, "sales":125.1, "profit":22},
+{"code":1512, "sales":82, "profit":51.2},
+{"code":1513, "sales":155.5, "profit":17.3},
+{"code":1514, "sales":98.7, "profit":97.3},
+{"code":1515, "sales":0.1, "profit":15.4},
+{"code":1516, "sales":60, "profit":76.5},
+{"code":1600, "sales":55.4, "profit":62.6},
+{"code":1601, "sales":60, "profit":57.6},
+{"code":1602, "sales":164.1, "profit":17.2},
+{"code":1603, "sales":42.9, "profit":119.1},
+{"code":1604, "sales":54.6, "profit":173.3},
+{"code":1605, "sales":37, "profit":149.5},
+{"code":1606, "sales":28.9, "profit":19.1},
+{"code":1607, "sales":111.8, "profit":-0.1},
+{"code":1608, "sales":46, "profit":73.9},
+{"code":1609, "sales":2.2, "profit":46.3},
+{"code":1610, "sales":0.1, "profit":87.8},
+{"code":1611, "sales":15.9, "profit":98.9},
+{"code":1612, "sales":66.2, "profit":6.9},
+{"code":1700, "sales":8, "profit":6.5},
+{"code":1701, "sales":8, "profit":6.5}
+];
+
+</script>
+</head>
+<body>
+	<div class="content">
+		<!-- 맵차트가 삽입될 DIV -->
+		<div id="mapHolder" style="width:400px;height:600px;margin:0px;float:left;"></div>
+		<div id="mapHolder2" style="width:400px;height:600px;float:left;"></div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<company>
+	<branch>
+		<branchCode>100</branchCode>
+		<branchName>강원지점</branchName>
+		<v>2</v>
+		<h>30</h>
+		<address>강원 강릉시 포남동 1109</address>
+	</branch>
+	<branch>
+		<branchCode>200</branchCode>
+		<branchName>수원지점</branchName>
+		<v>-6</v>
+		<h>-13</h>
+		<address>경기 수원시 팔달구 화서동 223</address>
+	</branch>
+	<branch>
+		<branchCode>500</branchCode>
+		<branchName>광주지점</branchName>
+		<address>강광주 서구 금호동 762</address>
+	</branch>
+	<branch>
+		<branchCode>700</branchCode>
+		<branchName>대전지점</branchName>
+		<address>대전 유성구 봉명동 536</address>
+	</branch>
+	<branch>
+		<branchCode>800</branchCode>
+		<branchName>부산지점</branchName>
+		<lapos>right</lapos>
+		<address>부산 중구 보수동1가 95</address>
+	</branch>
+	<branch>
+		<branchCode>900</branchCode>
+		<branchName>종로지점</branchName>
+		<v>-7</v>
+		<lapos>top</lapos>
+		<address>서울 종로구 종로2가 84</address>
+	</branch>
+	<branch>
+		<branchCode>900</branchCode>
+		<branchName>영등포지점</branchName>
+		<v>2</v>
+		<h>-7</h>
+		<lapos>left</lapos>
+		<address>강서울 영등포구 영등포동6가 89</address>
+	</branch>
+	<branch>
+		<branchCode>900</branchCode>
+		<branchName>강남지점</branchName>
+		<v>3</v>
+		<h>7</h>
+		<lapos>right</lapos>
+		<address>서울 강남구 역삼동 670</address>
+	</branch>
+	<factory>
+		<factoryCode>1600</factoryCode>
+		<factoryName>청주공장</factoryName>
+		<v>16</v>
+		<h>-22</h>
+		<lapos>right</lapos>
+		<address>충북 청주시 흥덕구 봉명동 172</address>
+	</factory>
+	<factory>
+		<factoryCode>300</factoryCode>
+		<factoryName>창원공장</factoryName>
+		<v>6</v>
+		<h>18</h>
+		<lapos>left</lapos>
+		<address>경남 창원시 성산구 웅남동 40</address>
+	</factory>
+	<factory>
+		<factoryCode>400</factoryCode>
+		<factoryName>영천공장</factoryName>
+		<v>31</v>
+		<h>14</h>
+		<address>경북 영천시 대전동 564</address>
+	</factory>
+</company>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="ProvinciadeGuadalajara" symbol="ProvinciadeGuadalajara"/>
+	<State code="200" label="Granada" symbol="Granada"/>
+	<State code="300" label="Guipúzcoa" symbol="Guipúzcoa"/>
+	<State code="400" label="Navarra" symbol="Navarra"/>
+	<State code="500" label="La Rioja" symbol="LaRioja"/>
+	<State code="600" label="ProvinciadeLasPalmas" symbol="ProvinciadeLasPalmas"/>
+	<State code="700" label="LaCoruña" symbol="LaCoruña"/>
+	<State code="800" label="León" symbol="León"/>
+	<State code="900" label="Lugo" symbol="Lugo"/>
+	<State code="1000" label="ComunidaddeMadrid" symbol="ComunidaddeMadrid"/>
+	<State code="1100" label="Málaga" symbol="Málaga"/>
+	<State code="1200" label="Murcia" symbol="Murcia"/>
+	<State code="1300" label="ProvinciadeBadajoz" symbol="ProvinciadeBadajoz"/>
+	<State code="1400" label="Barcelona" symbol="Barcelona"/>
+	<State code="1500" label="Valladolid" symbol="Valladolid"/>
+	<State code="1600" label="IslasBaleares" symbol="IslasBaleares"/>
+	<State code="1700" label="Valencia" symbol="Valencia"/>
+	<State code="1800" label="Burgos" symbol="Burgos"/>
+	<State code="1900" label="Vizcaya" symbol="Vizcaya"/>
+	<State code="2000" label="Zaragoza" symbol="Zaragoza"/>
+	<State code="2100" label="Zamora" symbol="Zamora"/>
+	<State code="2200" label="SantaCruzdeTenerife" symbol="SantaCruzdeTenerife"/>
+	<State code="2300" label="Salamanca" symbol="Salamanca"/>
+	<State code="2400" label="Segovia" symbol="Segovia"/>
+	<State code="2500" label="Sevilla" symbol="Sevilla"/>
+	<State code="2600" label="Soria" symbol="Soria"/>
+	<State code="2700" label="CiudadReal" symbol="CiudadReal"/>
+	<State code="2800" label="ProvinciadeÁvila" symbol="ProvinciadeÁvila"/>
+	<State code="2900" label="ComunidadAutónomadelPrincipadodeAsturias" symbol="ComunidadAutónomadelPrincipadodeAsturias"/>
+	<State code="3000" label="Álava" symbol="Álava"/>
+	<State code="3100" label="ProvinciadeAlicante" symbol="ProvinciadeAlicante"/>
+	<State code="3200" label="Almería" symbol="Almería"/>
+	<State code="3300" label="Albacete" symbol="Albacete"/>
+	<State code="3400" label="Lérida" symbol="Lérida"/>
+	<State code="3500" label="Orense" symbol="Orense"/>
+	<State code="3600" label="Huesca" symbol="Huesca"/>
+	<State code="3700" label="ProvinciadeHuelva" symbol="ProvinciadeHuelva"/>
+	<State code="3800" label="Gerona" symbol="Gerona"/>
+	<State code="3900" label="ProvinciadeCádiz" symbol="ProvinciadeCádiz"/>
+	<State code="4000" label="Cáceres" symbol="Cáceres"/>
+	<State code="4100" label="Castellón" symbol="Castellón"/>
+	<State code="4200" label="Cantabria" symbol="Cantabria"/>
+	<State code="4300" label="ProvinciadeCórdoba" symbol="ProvinciadeCórdoba"/>
+	<State code="4400" label="Cuenca" symbol="Cuenca"/>
+	<State code="4500" label="Tarragona" symbol="Tarragona"/>
+	<State code="4600" label="Teruel" symbol="Teruel"/>
+	<State code="4700" label="Toledo" symbol="Toledo"/>
+	<State code="4800" label="Palencia" symbol="Palencia"/>
+	<State code="4900" label="Pontevedra" symbol="Pontevedra"/>
+	<State code="5000" label="Jaén" symbol="Jaén"/>
+</Map>

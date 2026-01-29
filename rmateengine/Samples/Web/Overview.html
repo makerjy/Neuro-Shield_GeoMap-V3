@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rMate HTML5 MapChart</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="rMateMapChart for HTML5, Riamore Soft 2016">
+<meta name="keywords" content="HTML5,MapChart,JavaScript,CSS,Ajax,Graph,rMateMapChart">
+
+<style type="text/css">
+
+@font-face{
+	font-family:open-sans;
+	src:url(./fonts/OpenSans.woff);
+}
+
+@font-face{
+	font-family:open-sans;
+	src:url(./fonts/OpenSans-Semibold.woff);
+	font-weight:600;
+}
+
+@font-face{
+	font-family:open-sans;
+	src:url(./fonts/OpenSans-Bold.woff);
+	font-weight:700;
+}
+
+@font-face{
+	font-family:NanumSquareNeo;
+	src:url(./fonts/NanumSquareNeoTTF-bRg.woff);
+}
+
+@font-face{
+	font-family:NanumSquareNeo;
+	src:url(./fonts/NanumSquareNeoTTF-cBd.woff);
+	font-weight:700;
+}
+
+@font-face{
+	font-family:NanumSquareNeo;
+	src:url(./fonts/NanumSquareNeoTTF-dEb.woff);
+	font-weight:800;
+}
+
+html, body{
+	width:100%;
+	
+	font-family:open-sans, NanumSquareNeo;
+	padding:0;
+	margin:0;
+}
+
+.overview{
+	width:100%;
+}
+
+.overview_title{
+	color:#30363B;
+	font-size:35px;
+	font-weight:800;/*Extra Bold*/
+	text-align:center;
+	
+	margin:65px 0;
+}
+
+.overview_container {
+	margin: auto;
+	width: 1270px;
+	height: 2650px;
+}
+
+#mapchart_overview_one, #mapchart_overview_five{
+	width:605px;
+	height: 542px;
+	display: inline-block;
+	float: left;
+}
+
+#mapchart_overview_one .overviewItem, #mapchart_overview_five .overviewItem {
+	display: block;
+}
+
+#mapchart_overview_five{
+	margin-top: 30px;
+}
+
+#mapchart_overview_one > div, #mapchart_overview_five > div {
+	outline: 1px solid #E3E8ED;
+	border-radius:14px;
+	position:relative;
+	text-align: center;
+	
+	background-color:#fff;
+	transition:transform .3s;
+	filter:drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.1));
+}
+
+#mapchart_overview_two, #mapchart_overview_six {
+	width: 660px;
+	height: 542px;
+	display: inline-block;
+	float: left;
+}
+
+ #mapchart_overview_three, #mapchart_overview_four {
+	display: inline-block;
+	float: left;
+	margin-top: 30px;
+}
+
+#mapchart_overview_six {
+	display: inline-block;
+	float: left;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+, #mapchart_overview_seven {
+	display: inline-block;
+	float: left;
+}
+
+#mapchart_overview_two > div, #mapchart_overview_six > div{
+	width: 287px;
+	height: 255px;
+	border:1px solid #E3E8ED;
+	border-radius:14px;
+	position:relative;
+	text-align: center;
+	
+	background-color:#fff;
+	transition:transform .3s;
+	filter:drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.1));
+
+	padding: 15px 0 0 0px;
+	float: left;
+	margin-left: 30px;
+	margin-bottom: 30px;
+}
+
+#mapchart_overview_three > div, #mapchart_overview_seven > div, #mapchart_overview_four > div {
+	width: 287px;
+	height: 255px;
+	border:1px solid #E3E8ED;
+	border-radius:14px;
+	position:relative;
+	text-align: center;
+	
+	background-color:#fff;
+	transition:transform .3s;
+	filter:drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.1));
+
+	padding: 15px 0 0 0px;
+	float: left;
+	margin-right: 30px;
+	margin-bottom: 30px;
+}
+
+#mapchart_overview_four > div {
+	height: 285px;
+}
+
+#mapchart_overview_one > div:hover, #mapchart_overview_two > div:hover, #mapchart_overview_three > div:hover, #mapchart_overview_four > div:hover, #mapchart_overview_five > div:hover, #mapchart_overview_six > div:hover, #mapchart_overview_seven > div:hover{
+	transform: scale(1.1);
+}
+
+.overviewItem {
+	width: 257px;
+	height:225px;	
+	font-size:14px;
+	text-align:center;
+	display: inline-block;
+	
+	background-repeat: no-repeat;
+	background-size: cover;
+
+	color: #57616B;
+
+	text-align: center;
+	font-feature-settings: 'clig' off, 'liga' off;
+	font-size: 13px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 470px;
+}
+
+#mapchart_overview_four .overviewItem {
+	width: 235px;
+	height: 205px;
+}
+
+#OverView_SeperateLine {
+	width: 1240px;
+	height: 1px;
+	background: #F0F3F8;
+	float: left;
+}
+
+div{
+	box-sizing:border-box;
+}
+
+.overviewLabel {
+	position: absolute;
+	top: 30px;
+	left: 30px;
+
+	color: #57616B;
+	font-feature-settings: 'clig' off, 'liga' off;
+	font-family: "NanumSquareNeo";
+	font-size: 13px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 130%; /* 16.9px */
+	letter-spacing: -0.65px;
+}
+
+.overviewOneLabelSub, .overviewFiveLabelSub {
+	color: #FFF;
+	text-align: center;
+	font-feature-settings: 'clig' off, 'liga' off;
+	font-family: "NanumSquareNeo";
+	font-size: 11px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 130%; /* 14.3px */
+	letter-spacing: -0.44px;
+	position: absolute;
+	bottom: 80px;
+	left: calc(50% - 67.5px);
+}
+
+.overviewOneLabel, .overviewFiveLabel {
+	color: #FFF;
+	font-feature-settings: 'clig' off, 'liga' off;
+	font-family: "Open Sans";
+	font-size: 23px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 130%; /* 29.9px */
+	position: absolute;
+	bottom: 50px;
+	left: calc(50% - 36.5px);
+}
+
+</style>
+
+<!-- jQuery -->
+<script src="./jQuery/jquery-1.12.4.min.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+	$("#mapchart_overview_one").bind("click", function(event){
+		/*
+		var sampleLi, 
+			menuType, sampleURL,
+			chartMenu = event.target,
+			menu = window.parent.menuFrame;
+		
+		if(chartMenu.id == "mapchart_overview_one")
+			return;
+		
+		chartMenu = chartMenu.innerText;
+
+		if(chartMenu.indexOf("Gauge") > -1){
+			if(chartMenu.indexOf("Simple") > -1 && (chartMenu = "Gauge"))
+				sampleLi = menu.document.getElementById(chartMenu).nextSibling.childNodes[0];
+			else
+				sampleLi = menu.document.getElementById(chartMenu).nextSibling.childNodes[3];
+			sampleURL = getSampleURL(sampleLi.childNodes[0]);
+		}else{
+			if(chartMenu == "OverlayBubble"){
+				chartMenu = "Pyramid";
+				sampleLi = menu.document.getElementById(chartMenu).nextSibling.childNodes[4];
+			}else
+				sampleLi = menu.document.getElementById(chartMenu).nextSibling.childNodes[0];
+			sampleURL = getSampleURL(sampleLi.childNodes[0]);
+		}
+		
+		menuType = menu.document.getElementById(chartMenu);
+		if(!menuType._expand)
+			menu.expandItem(menuType);
+		menu.selectTypeItem(sampleLi);
+		window.parent.sampleFrame.frameElement.src = "./Samples/" + sampleURL;
+		*/
+	});
+});
+
+// return sample url
+function getSampleURL(a){
+	a = a.href.split("/");
+	return a[a.length - 1];
+}
+
+</script>
+
+</head>
+<body>
+<div class="overview">
+	<div class="overview_title">알메이트 맵차트</div>
+	<div class="overview_container">
+		<div id="mapchart_overview_one">
+			<div><div class="overviewItem" style="width: 605px;height: 542px;	background-size:inherit;background-image:url(./Images/MapChart_01_Korea.png);"></div>
+				<div class="overviewOneLabelSub">25개 자치구와 426개 행정동</div>
+				<div class="overviewOneLabel">KOREA</div>
+			</div>
+		</div>
+		<div id="mapchart_overview_two">
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_02_GreaterSeoulArea.png);"></div><div class="overviewLabel">수도권</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_03_Gyeonggi.png);"><div class="overviewLabel">경기도</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_04_Incheon.png);"><div class="overviewLabel">인천</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_05_Chungcheong.png);"><div class="overviewLabel">충청도</div></div></div>
+		</div>
+		<div id="mapchart_overview_three">
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_06_Gangwon.png);"><div class="overviewLabel">강원도</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_07_Gyeongsang.png);"><div class="overviewLabel">경상도</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_08_Jeolla.png);"><div class="overviewLabel">전라도</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_09_Jeju.png);"><div class="overviewLabel">제주도</div></div></div>
+		</div>
+		<section id="OverView_SeperateLine"></section>
+		<div id="mapchart_overview_four">
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_10_MulitPlot.png);">Multi Plot</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_11_PanelSeries.png);">Panel Series</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_12_BubbleSeries.png);">Bubble Series</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_13_SparkColumn.png);">Spark-Column</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_14_SparkPie.png);">Spark-Pie</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_15_RouteSeries.png);">Route Series</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_16_PatternMap.png);">Pattern Map</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_17_GIS연동.png);">GIS 연동</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_18_데이터영역범례.png);">데이터 영역 범례</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_19_DesignMap.png);">Design Map</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_20_Div데이터팁.png);">Div 데이터팁</div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_21_ImageMap.png);">Image Map</div></div>
+		</div>
+		<section id="OverView_SeperateLine"></section>
+		<div id="mapchart_overview_five">
+			<div><div class="overviewItem" style="width: 605px;height: 542px;background-size:inherit;	background-image:url(./Images/MapChart_22_WorldMap.png);"></div>
+				<div class="overviewFiveLabelSub">세계지도 7대륙, 중동분리 7대륙, 세계의 국가</div>
+				<div class="overviewFiveLabel">WORLD MAP</div>
+			</div>
+		</div>
+		<div id="mapchart_overview_six">
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_23_USA.png);"><div class="overviewLabel">미국</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_24_UK.png);"><div class="overviewLabel">영국</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_25_Japan.png);"><div class="overviewLabel">일본</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_26_China.png);"><div class="overviewLabel">중국</div></div></div>
+		</div>
+		<div id="mapchart_overview_seven">
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_27_Vietnam.png);"><div class="overviewLabel">베트남</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_28_Indonesia.png);"><div class="overviewLabel">인도네시아</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_29_Canada.png);"><div class="overviewLabel">캐나다</div></div></div>
+			<div><div class="overviewItem" style="background-image:url(./Images/MapChart_30_Mexico.png);"><div class="overviewLabel">멕시코</div></div></div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

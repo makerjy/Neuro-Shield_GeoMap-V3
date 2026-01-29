@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rMateMapChart>
+	<MapChart id="mainMap" showDataTips="true">
+		<series>
+			<MapSeries id="mapseries" selectionMarking="color" color="#777777"
+				labelPosition="inside" displayName="Map">
+				<showDataEffect>
+					<SeriesInterpolate duration="1000"/>
+				</showDataEffect>
+				<selectionFill>
+					<SolidColor color="#f6b149" />
+				</selectionFill>
+				<stroke>
+					<Stroke color="#e1e1e1" weight="0.8" alpha="1"/>
+				</stroke>
+				<rollOverStroke>
+					<Stroke color="#e1e1e1" weight="0.8" alpha="1"/>
+				</rollOverStroke>
+			</MapSeries>
+		</series>
+	</MapChart>
+</rMateMapChart>

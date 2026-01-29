@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="BadenWürttemberg" symbol="BadenWürttemberg"/>
+	<State code="200" label="FreistaatBayern" symbol="FreistaatBayern"/>
+	<State code="300" label="Berlin" symbol="Berlin"/>
+	<State code="400" label="Brandenburg" symbol="Brandenburg"/>
+	<State code="500" label="FreieHansestadtBremen" symbol="FreieHansestadtBremen"/>
+	<State code="600" label="FreieundHansestadtHamburg" symbol="FreieundHansestadtHamburg"/>
+	<State code="700" label="Hessen" symbol="Hessen"/>
+	<State code="800" label="MecklenburgVorpommern" symbol="MecklenburgVorpommern"/>
+	<State code="900" label="Niedersachsen" symbol="Niedersachsen"/>
+	<State code="1000" label="NordrheinWestfalen" symbol="NordrheinWestfalen"/>
+	<State code="1100" label="RheinlandPfalz" symbol="RheinlandPfalz"/>
+	<State code="1200" label="Saarland" symbol="Saarland"/>
+	<State code="1300" label="FreistaatSachsen" symbol="FreistaatSachsen"/>
+	<State code="1400" label="SachsenAnhalt" symbol="SachsenAnhalt"/>
+	<State code="1500" label="SchleswigHolstein" symbol="SchleswigHolstein"/>
+	<State code="1600" label="FreistaatThüringen" symbol="FreistaatThüringen"/>
+</Map>

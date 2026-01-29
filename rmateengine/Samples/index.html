@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<title>rMate HTML5 Chart</title>
+<link href="./Samples/Web/examples.css" rel="stylesheet">
+<script type="text/javascript" src="./Samples/Web/util.js"></script>
+<script type="text/javascript">
+
+	var subMenu = {}, // 상단 메뉴 클릭시 오른쪽 메뉴에 생성될 아이템들 저장 변수
+		pastClick, // 이전에 클릭되었던 메뉴
+		subPastClick; // 이전에 클릭되었던 서브메뉴
+
+	window.onload = function(){
+		
+		// 상단 메뉴들의 a태그에 클릭 핸들러를 설정한다.
+		var i,
+			chartDiv = $get("chartlist");
+
+		ancs = chartDiv.getElementsByTagName("a");
+		for(i = 0, n = ancs.length ; i < n ; i += 1){
+			demoEvent("add", ancs[i], "click", ancClickHandler);
+		}
+
+		// 탭 컨테이너, 컨텐트를 가져온다
+		var container = $get("tabContainer");
+		var tabcon = $get("tabscontent");
+		
+		// tabHeader_1을 가져와 저장한다
+		var navitem = $get("tabHeader_1");
+		
+		//store which tab we are on
+		var ident = navitem.id.split("_")[1];
+		navitem.parentNode.setAttribute("data-current",ident);
+		
+		// 저장한 navItem객체에 class를 추가한다.
+		setAttribute("add", "tabHeader_1", "tabActiveHeader");
+		//navitem.setAttribute(document.all ? "className" : "class","tabActiveHeader");
+		
+		// 탭 컨테이너의 div들을 숨긴다.
+		var pages = tabcon.getElementsByTagName("div");
+		for (i = 1; i < pages.length; i++) {
+			pages.item(i).style.display="none";
+		};
+
+		// 컨테이너 안의 li태그에 클릭 핸들러를 추가한다
+		var tabs = container.getElementsByTagName("li");
+		for (i = 0; i < tabs.length; i++) {
+			demoEvent("add", tabs[i], "click", tabClickHandler);
+		}
+		
+		// update버튼 클릭시 차트 업데이트 되도록 핸들러 등록
+		demoEvent("add", $get("update_btn"), "click", updateChart);
+		
+		// iframe 로드 핸들러
+		demoEvent("add", $get("chartSample"), "load", iframeContentChange);
+		
+		// layout textarea key 핸들러
+		var tarea_layout = $get("tarea_layout");
+		demoEvent("add", tarea_layout, "keydown", textAreaKeyHandler);
+		demoEvent("add", tarea_layout, "keyup", textAreaKeyHandler);
+		
+		// layout data key 핸들러
+		var tarea_data = $get("tarea_data");
+		demoEvent("add", tarea_data, "keydown", textAreaKeyHandler);
+		demoEvent("add", tarea_data, "keyup", textAreaKeyHandler);
+
+		// 샘플의 메뉴에대한 아이템들을 엘리먼트를 생성합니다.
+		makeSubMenuItems();
+		textAreaSetValue("", "");
+	};
+
+	// 서브 메뉴들을 생성합니다.
+	function makeSubMenuItems(id){
+
+		// 라인
+		subMenu.line = makeSubMenu({
+			"Line_2D_Segment":"Line Segment",
+			"Line_2D_Curve":"Line Curve",
+			"Line_2D_Step":"Line Step",
+			"Line_2D_Item":"Line ItemRenderer",
+			"Line_2D_BaseLine":"Line BaseLine",
+			"Dash_Lines":"Dashed Line Segment",
+			"Dash_Line_Curve":"Dashed Line Curve",
+			"Dash_Line_Step":"Dashed Line Step",
+			"Dash_Line_DashedLine":"Line + Dashed Line",
+			"Dash_DashedLine_Line":"Dashed Line + Line"
+		}),
+
+		// 컬럼
+		subMenu.column = makeSubMenu({
+			"Column_2D":"Column",
+			"Column_3D":"Column 3D",
+			"Column_2D_MS":"Multi Series",
+			"Column_3D_MS":"Multi Series 3D",
+			"Column_2D_Stacked":"Stacked",
+			"Column_2D_Stacked_Link":"Stacked(연결선잇기)",
+			"Column_3D_Stacked":"Stacked 3D",
+			"Column_3D_Stacked_Link":"Stacked 3D(연결선잇기)",
+			"Column_2D_MS_Stacked":"Multi Series Stacked",
+			"Column_2D_Width_Control":"Column Chart의 폭제어",
+			"Cylinder_3D":"Cylinder 3D",
+			"Cylinder_3D_MS":"Cylinder Multi Series 3D",
+			"Cylinder_3D_Stacked":"Cylinder Stacked 3D"
+		}),
+
+		// 바
+		subMenu.bar = makeSubMenu({
+			"Bar_2D":"Bar",
+			"Bar_3D":"Bar 3D",
+			"Bar_2D_MS":"Multi Series",
+			"Bar_3D_MS":"Multi Series 3D",
+			"Bar_2D_Stacked":"Stacked",
+			"Bar_3D_Stacked":"Stacked 3D",
+			"Bar_2D_MS_Stacked":"Multi Series Stacked",
+			"Bar_2D_Width_Control":"Bar2D(3D)Chart의 폭제어",
+			"Cylinder_Bar_3D":"Cylinder Bar 3D",
+			"Cylinder_Bar_3D_Stacked":"Cylinder Bar Stacked 3D"
+		}),
+
+		// 영역
+		subMenu.area = makeSubMenu({
+			"Area_2D":"Area",
+			"Area_2D_Stacked":"Stacked",
+			"Area_2D_MS":"Multi Series",
+			"Area_2D_BaseLine":"Area BaseLine"
+		}),
+
+		// 파이
+		subMenu.pie = makeSubMenu({ 
+			"Pie_2D":"Pie",
+			"Pie_3D":"Pie 3D",
+			"Pie_3D_Stacked":"Stacked 3D",
+			"Pie_2D_Wedge":"Pie with Wedge",
+			"Doughnut_2D":"Doughnut",
+			"Doughnut_3D":"Doughnut 3D"
+		}),
+		
+		// 버블
+		subMenu.bubble = makeSubMenu({
+			"Bubble_3D":"Bubble 3D",
+			"Bubble_3D_MS":"Multi Series 3D"
+		}),
+		
+		// 플롯
+		subMenu.plot = makeSubMenu({
+			"Plot_2D":"Plot",
+			"Plot_2D_Ex":"Plot - 중심선 긋기"
+		}),
+
+		// 콤비네이션
+		subMenu.combi = makeSubMenu({
+			"Combination_2D_Line":"Line Combination",
+			"Combination_3D_Line":"3D & Line Combination",
+			"Combination_3D_Complex_Line":"Complex Combination",
+			"Combination_3D_MS_Line":"Multi Series Combination",
+			"Combination_3D_Stacked_Line":"Stacked 3D & Line",
+			"Combi_2D_Single":"Area+Line+Column 차트",
+			"Combi_2D_Multi":"Area+Line+Multi Column 차트",
+			"Combi_Single":"Area+Line+3D Column 차트",
+			"Combi_Multi":"Area+Line+3D Multi Column 차트",
+			"Combi_Stacked":"Area+Line+3D Stacked Column 차트"
+		}),
+
+		// From - To
+		subMenu.fromTo = makeSubMenu({
+			"From_To_Bar_2D.html":"Steps",
+			"From_To_Bar_3D":"From-To (Bar)",
+			"From_To_Column_2D":"Waterfall",
+			"From_To_Column_3D":"From-To (Column)",
+			"From_To_Area_2D":"From-To (Area)",
+			"From_To_Area_2D_MS":"From-To (Area Multi)"
+		}),
+		
+		// 레이더
+		subMenu.radar = makeSubMenu({
+			"Radar_Polygon":"Radar Polygon-Fill Type",
+			"Radar_Polygon_NoFill":"Radar Polygon Type",
+			"Radar_Polygon_NoFill2":"Radar Polygon Type-2",
+			"Radar_Circle":"Radar Circle-Fill Type",
+			"Radar_Circle_NoFill":"Radar Circle Type"
+		}),
+		
+		// 목표대비실적
+		subMenu.goal = makeSubMenu({
+			"Target_3D":"Cylinder 3D Type",
+			"Target_Bar_3D":"Cylinder Bar 3D Type",
+			"Target_2D":"Linear 2D Type"
+		}),
+		
+		// 히스토리
+		subMenu.history = makeSubMenu({
+			"History_2D":"History Column",
+			"History_2D_Line":"History Line",
+			"History_2D_WL":"History Column-Line",
+			"History_3D":"History 3D Combination"
+		}),
+		
+		// 실시간
+		subMenu.realtime = makeSubMenu({
+			"RealTime_Size_TimeAxis":"데이터 갯수 기준(CategoryAxis)",
+			"RealTime_Time_TimeAxis":"시간 기준(DateTimeAxis)",
+			"Stock_Monitoring":"실시간 차트 샘플"
+		}),
+		
+		// 스크롤
+		subMenu.scroll = makeSubMenu({
+			"Scroll_Column_2D":"Column Chart",
+			"Scroll_Column_3D":"Column 3D Chart",
+			"Scroll_Column_2D_MS":"Column Multi Series Chart",
+			"Scroll_Column_2D_Stacked":"Column Stacked Chart",
+			"Scroll_Bar_2D_MS":"Bar Multi Series Chart",
+			"Scroll_Bar_2D_Inverted_MS":"Bar Multi Series Another",
+			"Scroll_Line_2D_MS":"Line Multi Series Chart",
+			"Scroll_Area_2D":"Area 2D Chart",
+			"Scroll_Area_2D_MS":"Area Multi Series Chart",
+			"Scroll_Combination_2D":"Combination Chart",
+			"Scroll_Lazy_Data":"Scroll Lazy Data"
+		}),
+		
+		// 매트릭스
+		subMenu.matrix = makeSubMenu({
+			"Matrix2D_Renderer":"Matrix 기본형",
+			"Matrix2D_Fill":"Matrix Fill",
+			"Matrix2D_Fill_2":"Matrix Fill 2",
+			"Matrix2D_Plot":"Matrix Plot",
+			"Matrix2D_Image":"Matrix Image",
+			"Matrix2D_Renderer_s":"Matrix 렌더러 종류"
+		}),
+		
+		// 이미지
+		subMenu.image = makeSubMenu({
+			"Image_Single_Ratio":"정배율-단일이미지(1)",
+			"Image_Single_MS_Ratio":"정배율-단일이미지(2)",
+			"Image_Single_FRatio":"차등배율-단일이미지(1)",
+			"Image_Single_FRatio2":"차등배율-단일이미지(2)",
+			"Image_SingleRepeat":"정배율-반복이미지(1)",
+			"Image_SingleRepeat2":"정배율-반복이미지(2)",
+			"Image_Multiple":"차등배율-복수이미지(1)",
+			"Image_Multiple2":"차등배율-복수이미지(2)"
+		}),
+		
+		// 슬라이드
+		subMenu.slide = makeSubMenu({
+			"Slide_Sample":"기본 슬라이드",
+			"Slide_Sample2":"효과를 추가한 슬라이드"
+		}),
+		
+		// 프리미엄 실시간
+		subMenu.realtimePre = makeSubMenu({
+			"RealTime_Premium_Line_Column":"다른 주기의 실시간 데이터 표현",
+			"RealTime_Premium_10Int":"전일과 금일의 실시간 비교",
+			"RealTime_Premium_25Base":"서로 다른 주기의 실시간 통합 비교"
+		}),
+		
+		// 캔들
+		subMenu.candle = makeSubMenu({
+			"Candlestick_Normal":"Candlestick Chart",
+			"Candlestick_Reverse":"Candlestick Chart Reverse",
+			"Candlestick_Symbol":"Candlestick Symbol",
+			"Candlestick_Symol_Another":"Candlestick Symbol Another",
+			"CandleLine_Symbol":"CandleLine Symbol",
+			"CandleLine_Baseline":"CandleLine Baseline",
+			"CandleArea_Symbol":"CandleArea Symbol",
+			"CandleArea_Baseline":"CandleArea Baseline",
+			"Candle_Lazy_Data":"Candle Lazy Data"
+		}),
+		
+		// 게이지
+		subMenu.gauge = makeSubMenu({
+			"Gauge_Circular_Blue":"Circular Blue",
+			"Gauge_Circular_Silver":"Circular Silver",
+			"Gauge_Circular_Orange":"Circular Orange",
+			"Gauge_Circular_Red":"Circular Red",
+			"Gauge_Half_Blue":"Half-Circular Blue",
+			"Gauge_Half_Silver":"Half-Circular Silver",
+			"Gauge_Half_Rainbow":"Half-Circular Rainbow",
+			"Gauge_Half_Red":"Half-Circular Red",
+			"Gauge_HorizontalCylinder":"Horizontal Cylinder Gauge",
+			"Gauge_VerticalCylinder":"Vertical Cylinder Gauge",
+			"Gauge_HorizontalLinear":"Horizontal Linear Gauge",
+			"Gauge_VerticalLinear":"Vertical Linear Gauge"
+		}),
+		
+		subMenu.dataProp = makeSubMenu({
+		});
+		
+		subMenu.axisProp = makeSubMenu({
+		});
+		
+		subMenu.lineBg = makeSubMenu({
+		});
+		
+		subMenu.axisLabel = makeSubMenu({
+		});
+		
+		subMenu.seriesProp = makeSubMenu({
+		});
+		
+		subMenu.seriesDesign = makeSubMenu({
+		});
+		
+		subMenu.effect = makeSubMenu({
+		});
+		
+		subMenu.legend = makeSubMenu({
+		});
+		
+		subMenu.subMemo = makeSubMenu({
+		});
+		
+		subMenu.eventFunc = makeSubMenu({
+		});
+		
+		subMenu.imageSend = makeSubMenu({
+		});
+		
+		subMenu.hugeData = makeSubMenu({
+		});
+		
+		subMenu.dualChart = makeSubMenu({
+		});
+    }
+
+</script>
+<!-- 샘플 작동을 위한 css와 js -->
+<script type="text/javascript" src="./Web/JS/common.js"></script>
+<script type="text/javascript" src="./Web/JS/sample_util.js"></script>
+<link rel="stylesheet" type="text/css" href="./Web/sample.css"/>
+
+<!-- SyntaxHighlighter -->
+<script type="text/javascript" src="./Web/syntax/shCore.js"></script>
+<script type="text/javascript" src="./Web/syntax/shBrushJScript.js"></script>
+<link type="text/css" rel="stylesheet" href="./Web/syntax/shCoreDefault.css"/>
+</head>
+<body>
+	<div class="demo-main">
+		<div class="active header"><a href="http://demo.riamore.net/">rMate Chart Demos</a></div>
+	</div>
+	<div class="demos-nav topMenu chartDemo">
+		<div id="chartlist" class="centerMenuTop on-menu chartDemo">
+			<div class="on-menu div-col chart">
+				<h2 class="chart-cat">- chart</h2>
+				<ul>
+					<li id="Line Charts">
+						<a id="line" href="./Samples/Line_2D_BaseLine.html" target="chartSample">Line Charts</a>
+					</li>
+					<li>
+						<a id="column" href="./Samples/Column_2D.html" target="chartSample">Column Charts</a>
+					</li>
+					<li>
+						<a id="bar" href="./Samples/Bar_2D.html" target="chartSample">Bar Charts</a>
+					</li>
+					<li>
+						<a id="area" href="./Samples/Area_2D_BaseLine.html" target="chartSample">Area Charts</a>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<a id="pie" href="./Samples/Pie_2D.html" target="chartSample">Pie Charts</a>
+					</li>
+					<li>
+						<a id="bubble" href="./Samples/Bubble_3D.html" target="chartSample">Bubble Charts</a>
+					</li>
+					<li>
+						<a id="plot" href="./Samples/Plot_2D.html" target="chartSample">Plot Charts</a>
+					</li>
+					<li>
+						<a id="combi" href="./Samples/Combi_Single.html" target="chartSample">Combination Charts</a>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<a id="fromTo" href="./Samples/From_To_Column_2D.html" target="chartSample">From-to Charts</a>
+					</li>
+					<li>
+						<a id="radar" href="./Samples/Radar_Polygon.html" target="chartSample">Radar Charts</a>
+					</li>
+					<li>
+						<a id="goal" href="./Samples/Target_3D.html" target="chartSample">목표대비실적 Charts</a>
+					</li>
+					<li>
+						<a id="history" href="./Samples/History_2D.html" target="chartSample">History Charts</a>
+					</li>
+					<li>
+						<a id="realtime" href="./Samples/RealTime_Size_TimeAxis.html" target="chartSample">Real-Time Chart</a>
+					</li>
+					<li>
+						<a id="scroll" href="./Samples/Scroll_Column_2D.html" target="chartSample">Scroll Chart</a>
+					</li>
+				</ul>
+			</div>
+			<div class="on-menu div-col premium">
+				<h2 class="chart-cat">- Premium Chart</h2>
+				<ul>
+					<li>
+						<a id="matrix" href="./Samples/Matrix2D_Renderer.html" target="chartSample">Matrix Chart</a>
+					</li>
+					<li>
+						<a id="imageC" href="./Samples/Image_Single_Ratio.html" target="chartSample">Image Chart</a>
+					</li>
+					<li>
+						<a id="slide" href="./Samples/Slide_Sample.html" target="chartSample">Slide Chart</a>
+					</li>
+					<li>
+						<a id="realtimePre" href="./Samples/RealTime_Premium_Line_Column.html" target="chartSample">RealTime-Premium Chart</a>
+					</li>
+					<li>
+						<a id="candle" href="./Samples/Candlestick_Normal.html" target="chartSample">Candlestick Chart</a>
+					</li>
+					<li>
+						<a id="gauge" href="./Samples/Gauge_Circular_Blue.html" target="chartSample">Gauge Chart</a>
+					</li>
+				</ul>    
+			</div>
+			<div class="on-menu div-col chart-prop">
+				<h2 class="chart-cat">- Chart Properties</h2>
+				<ul>
+					<li>
+						<a id="dataType" href="./Samples/Embeding_String_Array.html" target="chartSample">데이터 생성/연동방식</a>
+					</li>
+					<li>
+						<a id="axisProp" href="./Samples/XY_Tick.html" target="chartSample">축설정</a>
+					</li>
+					<li>
+						<a id="lineBg" href="./Samples/Line_2D_TargetLine.html" target="chartSample">선/범위/배경 추가</a>
+					</li>
+					<li>
+						<a id="axisLabel" href="./Samples/Label_Func_X.html" target="chartSample">축라벨 설정</a>
+					</li>
+					<li>
+						<a id="seriesProp" href="./Samples/LabelField_Func_Column.html" target="chartSample">시리즈 설정</a>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<a id="seriesDesign" href="./Samples/Column_3D_Custom_Fill.html" target="chartSample">시리즈 디자인</a>
+					</li>
+					<li>
+						<a id="effect" href="./Samples/Effect_SeriesInterpolate.html" target="chartSample">이펙트</a>
+					</li>
+					<li>
+						<a id="legendType" href="./Samples/Legend_Bottom.html" target="chartSample">범례</a>
+					</li>
+					<li>
+						<a id="titleMemo" href="./Samples/Subject_Mod.html" target="chartSample">제목/메모 추가</a>
+					</li>
+					<li>
+						<a id="eventFunc" href="./Samples/Zoom_Column.html" target="chartSample">이벤트/기능 추가</a>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<a id="saveImage" href="./Samples/GetImageSnapshot.html" target="chartSample">이미지 전송</a>
+					</li>
+					<li>
+						<a id="hugeData" href="./Samples/HugeData_Line.html" target="chartSample">대용량 데이터</a>
+					</li>
+					<li>
+						<a id="dualChart" href="./Samples/Dual_Chart.html" target="chartSample">여러차트 사용</a>
+					</li>
+				</ul>
+			</div>
+			</div>
+		</div>
+	<div id="mainWrap" class="centerMenu on-menu">
+		<div class="chart-type">
+			<h1 id="exampleTitle">
+				<span class="exampleIcon chartBarIcon"></span>
+				<span id="chartType"><strong>Line Charts</strong></span>&nbsp;:&nbsp;&nbsp;<span id="chartType2">Line Segment</span>
+			</h1>
+		</div>
+		<div id="main">
+			<div id="theme-list-container">
+			</div>
+			<div id="exampleWrap" style="visibility: visible;">
+				<div id="example">
+					<div style="height:420px;">
+						<iframe id="chartSample" name="chartSample" scrolling="no" width="100%" height="100%" frameborder="0" src="./Samples/Line_2D_Segment.html"></iframe>
+					</div>
+					<div style="color:#888888;">
+						<span class="exampleIcon chartBarIcon"></span>
+						<h1>Layout / Data</h1>
+						<div id="wrapper">
+							<div id="tabContainer">
+								<div id="tabs">
+									<ul>
+										<li id="tabHeader_1">Layout</li>
+										<li id="tabHeader_2">Data</li>
+									</ul>
+								</div>
+								<div id="tabscontent">
+									<div id="tabPage_1"><textarea id="tarea_layout" class="textarea"></textarea></div>
+									<div id="tabPage_2"><textarea  id="tarea_data" class="textarea"></textarea></div>
+								</div>
+								<div id="update_btn" class="btn btn_gradient btn_update">update</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="mainWrapInner" class="on-menu" style="float:left;">
+			<div id="chartSubList">
+				<ul id="examples-list">
+				</ul>
+			</div>
+			</div>
+		</div>
+	<div id="updater">
+						<div id="updaterTab">
+				<ul id="updaterTabUl">
+					<li id="updaterTabUlSource" class="active_tab">Source</li>
+					<li id="updaterTabUlLayout" class="non_active_li">Layout</li>
+					<li id="updaterTabUlData" class="non_active_li">Data</li>
+					<li id="updaterTabUlBlank">
+						<span id="btn_update">수정적용</span>
+					</li>
+				</ul>
+			</div>
+			<div id="updaterTarea">
+				<pre id="updaterTareaSource" class="brush:js toolbar:false" name="updaterTareaSource"></pre>
+				<textarea id="updaterTareaLayout" class="updaterTextarea" spellcheck="false"></textarea>
+				<textarea id="updaterTareaData" class="updaterTextarea" spellcheck="false"></textarea>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

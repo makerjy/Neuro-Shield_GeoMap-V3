@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rMate HTML5 MapChart</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="rMateMapChart for HTML5, Riamore Soft 2016">
+<meta name="keywords" content="HTML5,MapChart,JavaScript,CSS,Ajax,Graph,rMateMapChart">
+</head>
+<script type="text/javascript">
+	var orgFileName = location.href.replace(/.+\//g, "");
+	// change element classname 
+	function modiClass(target, role, name){
+		var cname = target.className;
+		if(role == "add")
+			cname += " " + name;
+		else
+			cname = cname.replace(new RegExp(name, "gi"), "");
+		target.className = cname;
+	}
+	
+	function frameOnload(event){
+		try{
+			var url = location.href;
+				
+			//로컬파일일 경우에는 실행할 수 없음
+			if(!url.match(/file:\/\//g)){
+				var i, a, li, aHref,
+					initOverview = "Overview.html",
+					menuFrame = window.parent.menuFrame,
+					sampleFrame = window.parent.sampleFrame,
+					newOverview = sampleFrame.location.href.replace(/.+\//g, "");
+
+				var lockF5Func = function(event){
+					//F5키를 막고, FrameReload
+					if(event.code == "F5"){
+						sampleFrame.frameElement.contentDocument.location.reload(true);
+						
+						event.preventDefault();
+						event.stopPropagation();
+					}
+				};
+
+				// F5키를 입력하면 index.html -> 해당 frame으로 연속 이동하게 변경함
+				window.addEventListener("keydown", lockF5Func, {capture:true});
+
+				for(i=0; i<window.parent.length; i++)
+					window.parent[i].addEventListener("keydown", lockF5Func, {capture:true});
+					
+				// 현재 페이지에 맞는 왼쪽 메뉴를 반영함
+				var menuFrameLITags = menuFrame.frameElement.contentDocument.getElementsByTagName("li");
+				for(i=0; i<menuFrameLITags.length; i++){
+					li = menuFrameLITags[i];
+					a = li.childNodes[0];
+					aHref = a.href.replace(/.+\//g, "");
+					
+					modiClass(li, "remove", "item_active");
+					
+					if(aHref == newOverview)
+						modiClass(li, "add", "item_active");
+				}
+				
+				// 주소창을 변경함
+				if(newOverview == initOverview){
+					newOverview = orgFileName;
+					if(url.indexOf("Samples/") > -1)
+						newOverview = "../" + newOverview;
+					
+					history.replaceState({}, "", newOverview);
+				}else{
+					if(url.indexOf("Samples/") == -1)
+						newOverview = "Samples/" + newOverview;
+					
+					history.replaceState({}, "", newOverview);
+				}
+			}
+		}catch(e){
+		}
+	}
+</script>
+<frameset cols="300px,100%" frameborder="0">
+	<frame scrolling="no" rows="100%" noresize src="./Samples/Web/LeftMenu.html" name="menuFrame" id="menuFrame" frameborder="0" marginwidth="0">
+	<frameset rows="100%">
+		<frame scrolling="yes" noresize src="./Samples/Web/Overview.html" name="sampleFrame" id="sampleFrame" frameborder="0" onLoad="frameOnload(event)">
+	</frameset>
+</frameSet>
+</html>

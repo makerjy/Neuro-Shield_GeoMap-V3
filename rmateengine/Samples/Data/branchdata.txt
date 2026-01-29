@@ -1,0 +1,25 @@
+﻿[
+{ "code": 100, "branchName":"강원지점", "v":2, "h":30, "address":"강원 강릉시 포남동 1109"},
+{ "code": 101, "branchName":"강원지점", "address":"강원 강릉시 포남동 1109" },
+
+{ "code": 200, "branchName":"수원지점", "v":16, "h":-13, "address":"경기 수원시 팔달구 화서동 223" },
+{ "code": 213, "branchName":"수원지점", "address":"경기 수원시 팔달구 화서동 223" },
+
+{ "code": 500, "branchName":"광주지점", "address":"광주 서구 금호동 762" },
+{ "code": 505, "branchName":"광주지점", "address":"광주 서구 금호동 762" },
+
+{ "code": 700, "branchName":"대전지점", "address":"대전 유성구 봉명동 536" },
+{ "code": 704, "branchName":"대전지점", "address":"대전 유성구 봉명동 536" },
+
+{ "code": 800, "branchName":"부산지점", "address":"부산 중구 보수동1가 95" },
+{ "code": 815, "branchName":"부산지점", "address":"부산 중구 보수동1가 95" },
+
+{ "code": 900, "branchName":"종로지점", "v":-7, "h":0, "lapos":"top", "address":"서울 종로구 종로2가 84" },
+{ "code": 923, "branchName":"종로지점", "v":15, "h":0, "address":"서울 종로구 종로2가 84" },
+
+{ "code": 900, "branchName":"영등포지점", "v":2, "h":-5, "lapos":"left", "address":"서울 영등포구 영등포동6가 89" },
+{ "code": 920, "branchName":"영등포지점", "address":"서울 영등포구 영등포동6가 89" },
+
+{ "code": 900, "branchName":"강남지점", "v":3, "h":7, "lapos":"right", "address":"서울 강남구 역삼동 670" },
+{ "code": 901, "branchName":"강남지점", "v":0, "h":-5, "address":"서울 강남구 역삼동 670" }
+]

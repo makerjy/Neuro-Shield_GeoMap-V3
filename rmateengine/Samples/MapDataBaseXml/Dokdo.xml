@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="동도" symbol="east"/>
+	<State code="200" label="서도" symbol="west" verticalCenterGap="20"/>
+	<State code="300" label="기타섬" symbol="islands"/>
+</Map>

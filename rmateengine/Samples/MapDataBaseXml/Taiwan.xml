@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map>
+	<State code="100" label="Kaohsiung" symbol="Kaohsiung"/>
+	<State code="200" label="NewTaipei" symbol="NewTaipei"/>
+	<State code="300" label="Taoyuan" symbol="Taoyuan"/>
+	<State code="400" label="Tainan" symbol="Tainan"/>
+	<State code="500" label="Taipei" symbol="Taipei"/>
+	<State code="600" label="Taichung" symbol="Taichung"/>
+	<State code="700" label="Nantou" symbol="Nantou"/>
+	<State code="800" label="Miaoli" symbol="Miaoli"/>
+	<State code="900" label="Hsinchu" symbol="Hsinchu"/>
+	<State code="1000" label="Yunlin" symbol="Yunlin"/>
+	<State code="1100" label="Yilan" symbol="Yilan"/>
+	<State code="1200" label="Chiayi" symbol="Chiayi"/>
+	<State code="1300" label="Changhua" symbol="Changhua"/>
+	<State code="1400" label="Taitung" symbol="Taitung"/>
+	<State code="1500" label="Penghu" symbol="Penghu"/>
+	<State code="1600" label="Pingtung" symbol="Pingtung"/>
+	<State code="1700" label="Hualien" symbol="Hualien"/>
+	<State code="1800" label="Kinmen" symbol="Kinmen"/>
+	<State code="1900" label="Lienchiang" symbol="Lienchiang"/>
+	<State code="2000" label="HsinchuCity" symbol="HsinchuCity"/>
+	<State code="2100" label="ChiayiCity" symbol="ChiayiCity"/>
+	<State code="2200" label="Keelung" symbol="Keelung"/>
+</Map>

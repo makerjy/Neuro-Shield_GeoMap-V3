@@ -1,0 +1,8 @@
+﻿[
+{ "code":100, "label":"설악산", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/SeolAk.jpg", "lapos":"left", "v":15, "h":25 },
+{ "code":300, "label":"한려해상", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/HanRyu.jpg", "lapos":"right", "h":20 },
+{ "code":900, "label":"북한산", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/BukHan.jpg", "lapos":"bottom" },
+{ "code":1200, "label":"지리산", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/JiRi.jpg", "lapos":"top" },
+{ "code":1400, "label":"한라산", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/HanRa.jpg" },
+{ "code":1600, "label":"속리산", "imgurl":"http://demo.riamore.net/flashdemo/map/Samples/Images/SokRi.jpg" }
+]
