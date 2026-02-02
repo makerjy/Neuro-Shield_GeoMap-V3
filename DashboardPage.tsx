@@ -22,7 +22,7 @@ const indicatorOptions = [
     label: "위험군 규모",
     desc: "추정 고위험 인구 수, 인구 1만명당 고위험 비율",
     unit: "명",
-    scale: [150000, 850000],
+    scale: [20000, 220000],
   },
   {
     key: "execution",
@@ -134,8 +134,60 @@ export function DashboardPage() {
   }, [currentFeatures, level]);
 
   useEffect(() => {
-    const codes = currentFeatures.map((f) => getFeatureCode(level, f)).filter(Boolean);
-    setStats(generateDummyStats(codes, `${indicatorKey}-${year}`));
+    const toActual = (value: number) => scaleIndicatorValue(value);
+    const emdFeatures = (emdGeo?.features ?? []) as Feature<Geometry, any>[];
+    if (!emdFeatures.length) {
+      const codes = currentFeatures.map((f) => getFeatureCode(level, f)).filter(Boolean);
+      const baseStats = generateDummyStats(codes, `${indicatorKey}-${year}`).map((item) => ({
+        ...item,
+        value: toActual(item.value),
+      }));
+      setStats(baseStats);
+      return;
+    }
+
+    const emdCodesAll = emdFeatures.map((f) => getFeatureCode("emd", f)).filter(Boolean);
+    const emdStatsAll = generateDummyStats(emdCodesAll, `${indicatorKey}-${year}-emd`).map((item) => ({
+      ...item,
+      value: toActual(item.value),
+    }));
+    const emdMap = new Map(emdStatsAll.map((item) => [item.code, item.value]));
+
+    if (level === "emd") {
+      const sigPrefix = selectedCodes.sig ?? "";
+      const filtered = emdCodesAll
+        .filter((code) => code.startsWith(sigPrefix))
+        .map((code) => ({ code, value: emdMap.get(code) ?? 0 }));
+      setStats(filtered);
+      return;
+    }
+
+    if (level === "sig") {
+      const sigFeatures = (sigGeo?.features ?? []) as Feature<Geometry, any>[];
+      const sigPrefix = selectedCodes.ctprvn ?? "";
+      const filteredSig = sigFeatures.filter((f) =>
+        String(getFeatureCode("sig", f)).startsWith(sigPrefix)
+      );
+      const sigStats = filteredSig.map((feature) => {
+        const sigCode = getFeatureCode("sig", feature);
+        const sum = emdCodesAll
+          .filter((code) => code.startsWith(sigCode))
+          .reduce((acc, code) => acc + (emdMap.get(code) ?? 0), 0);
+        return { code: sigCode, value: sum };
+      });
+      setStats(sigStats);
+      return;
+    }
+
+    const ctprvnFeatures = (ctprvnGeo?.features ?? []) as Feature<Geometry, any>[];
+    const ctStats = ctprvnFeatures.map((feature) => {
+      const ctCode = getFeatureCode("ctprvn", feature);
+      const sum = emdCodesAll
+        .filter((code) => code.startsWith(ctCode))
+        .reduce((acc, code) => acc + (emdMap.get(code) ?? 0), 0);
+      return { code: ctCode, value: sum };
+    });
+    setStats(ctStats);
   }, [level, selectedCodes, currentFeatures, indicatorKey, year]);
 
   const handleSelect = (nextLevel: Level, code: string) => {
@@ -221,12 +273,11 @@ export function DashboardPage() {
   };
 
   const formatIndicatorValue = (value: number) => {
-    const scaled = scaleIndicatorValue(value);
-    if (selectedIndicator.unit === "%") return `${scaled.toFixed(1)}%`;
-    if (selectedIndicator.unit === "점") return `${Math.round(scaled)}점`;
-    if (selectedIndicator.unit === "일") return `${Math.round(scaled)}일`;
-    if (selectedIndicator.unit === "분") return `${Math.round(scaled)}분`;
-    return `${formatNumber.format(Math.round(scaled))}명`;
+    if (selectedIndicator.unit === "%") return `${value.toFixed(1)}%`;
+    if (selectedIndicator.unit === "점") return `${Math.round(value)}점`;
+    if (selectedIndicator.unit === "일") return `${Math.round(value)}일`;
+    if (selectedIndicator.unit === "분") return `${Math.round(value)}분`;
+    return `${formatNumber.format(Math.round(value))}명`;
   };
 
   const values = useMemo(() => stats.map((item) => item.value), [stats]);
@@ -506,6 +557,7 @@ export function DashboardPage() {
             indicatorLabel={selectedIndicator.label}
             unit={selectedIndicator.unit}
             year={year}
+            valueFormatter={formatIndicatorValue}
           />
         </div>
 

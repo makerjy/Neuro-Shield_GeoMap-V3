@@ -14,6 +14,7 @@ export type KoreaDrilldownMapProps = {
   indicatorLabel?: string;
   unit?: string;
   year?: number;
+  valueFormatter?: (value: number) => string;
 };
 
 const MIN_SIZE = 50;
@@ -52,6 +53,7 @@ export function KoreaDrilldownMap({
   indicatorLabel = "지표",
   unit = "",
   year,
+  valueFormatter,
 }: KoreaDrilldownMapProps) {
   const { ref, width, height } = useResizeObserver<HTMLDivElement>();
   const [tooltip, setTooltip] = useState<{ x: number; y: number; name: string; value: number; code: string } | null>(null);
@@ -234,28 +236,30 @@ export function KoreaDrilldownMap({
             position: "fixed",
             left: tooltip.x,
             top: tooltip.y,
-            background: "rgba(15, 23, 42, 0.85)",
+            background: "rgba(15, 23, 42, 0.92)",
             color: "#fff",
-            padding: "6px 8px",
-            borderRadius: 6,
+            padding: "10px 12px",
+            borderRadius: 10,
             fontSize: 12,
             pointerEvents: "none",
             zIndex: 1000,
             whiteSpace: "nowrap",
+            boxShadow: "0 10px 20px rgba(15, 23, 42, 0.35)",
           }}
         >
-          <div style={{ fontWeight: 600 }}>{tooltip.name}</div>
-          <div>
-            코드: {tooltip.code}
+          <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 6 }}>{tooltip.name}</div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 6 }}>
+            <span style={{ fontSize: 11, color: "#cbd5f5" }}>{indicatorLabel}</span>
+            <span style={{ fontSize: 16, fontWeight: 700 }}>
+              {valueFormatter ? valueFormatter(tooltip.value) : tooltip.value}
+              {!valueFormatter && unit && <span style={{ fontSize: 11, fontWeight: 500, marginLeft: 4 }}>({unit})</span>}
+            </span>
           </div>
-          <div>
-            {indicatorLabel}: <strong>{tooltip.value}</strong> {unit && <span>({unit})</span>}
-          </div>
-          {typeof year === "number" && <div>기준연도: {year}년</div>}
-          <div>
+          {typeof year === "number" && <div style={{ fontSize: 11, color: "#cbd5f5" }}>기준연도: {year}년</div>}
+          <div style={{ fontSize: 11, color: "#cbd5f5" }}>
             전년 대비: {yoyMap.get(tooltip.code)?.toFixed(1) ?? "-"}
           </div>
-          <div>
+          <div style={{ fontSize: 11, color: "#cbd5f5" }}>
             랭크: {rankedMap.get(tooltip.code) ?? "-"}
           </div>
         </div>
